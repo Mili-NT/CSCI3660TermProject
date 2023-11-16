@@ -18,8 +18,10 @@ public class WordAPIManager {
         }
         return retrofit;
     }
-
-    public static String getxRapidapiKeyApiKey() {
+    public static String getXRapidAPIHost(){
+        return X_RAPIDAPI_HOST;
+    }
+    public static String getXRapidAPIKey() {
         return X_RAPIDAPI_KEY;
     }
 }

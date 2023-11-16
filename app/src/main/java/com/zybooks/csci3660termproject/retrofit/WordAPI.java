@@ -14,5 +14,10 @@ public interface WordAPI {
             "X-RapidAPI-Key: " + WordAPIManager.X_RAPIDAPI_KEY
     })
     @GET("words")
-    Call<WordAPIResponse> getRandomWord(@Query("random") Boolean random, @Query("letters") Integer letters);
+    Call<WordAPIResponse> getWords(
+            @Query("letterPattern") String letterPattern,
+            @Query("letters") int letters,
+            @Query("limit") int limit,
+            @Query("page") int page
+    );
 }
