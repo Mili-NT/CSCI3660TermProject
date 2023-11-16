@@ -1,64 +1,110 @@
 package com.zybooks.csci3660termproject;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ColorFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import yuku.ambilwarna.AmbilWarnaDialog;
+
 public class ColorFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    // text view variable to set the color for GFG text
+    private TextView gfgTextView;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // two buttons to open color picker dialog and one to
+    // set the color for GFG text
+    private Button mSetColorButton, mPickColorButton;
 
-    public ColorFragment() {
-        // Required empty public constructor
-    }
+    // view box to preview the selected color
+    private View mColorPreview;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ColorFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ColorFragment newInstance(String param1, String param2) {
-        ColorFragment fragment = new ColorFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    // this is the default color of the preview box
+    private int mDefaultColor;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+       View view = inflater.inflate(R.layout.fragment_color,container, false);
+
+        // register the GFG text with appropriate ID
+        gfgTextView = view.findViewById(R.id.gfg_heading);
+
+        // register two of the buttons with their
+        // appropriate IDs
+        mPickColorButton = view.findViewById(R.id.pick_color_button);
+        mSetColorButton = view.findViewById(R.id.set_color_button);
+
+        // and also register the view which shows the
+        // preview of the color chosen by the user
+        mColorPreview = view.findViewById(R.id.preview_selected_color);
+
+        // set the default color to 0 as it is black
+        mDefaultColor = 0;
+
+        // button open the AmbilWanra color picker dialog.
+        mPickColorButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // to make code look cleaner the color
+                        // picker dialog functionality are
+                        // handled in openColorPickerDialogue()
+                        // function
+                        openColorPickerDialogue();
+                    }
+                });
+
+        // button to set the color GFG text
+        mSetColorButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // as the mDefaultColor is the global
+                        // variable its value will be changed as
+                        // soon as ok button is clicked from the
+                        // color picker dialog.
+                        gfgTextView.setTextColor(mDefaultColor);
+                    }
+                });
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_color, container, false);
+    // the dialog functionality is handled separately
+    // using openColorPickerDialog this is triggered as
+    // soon as the user clicks on the Pick Color button And
+    // the AmbilWarnaDialog has 2 methods to be overridden
+    // those are onCancel and onOk which handle the "Cancel"
+    // and "OK" button of color picker dialog
+    public void openColorPickerDialogue() {
+
+        // the AmbilWarnaDialog callback needs 3 parameters
+        // one is the context, second is default color,
+        final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(requireContext(), mDefaultColor,
+                new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                    @Override
+                    public void onCancel(AmbilWarnaDialog dialog) {
+                        // leave this function body as
+                        // blank, as the dialog
+                        // automatically closes when
+                        // clicked on cancel button
+                    }
+
+                    @Override
+                    public void onOk(AmbilWarnaDialog dialog, int color) {
+                        // change the mDefaultColor to
+                        // change the GFG text color as
+                        // it is returned when the OK
+                        // button is clicked from the
+                        // color picker dialog
+                        mDefaultColor = color;
+
+                        // now change the picked color
+                        // preview box to mDefaultColor
+                        mColorPreview.setBackgroundColor(mDefaultColor);
+                    }
+                });
+        colorPickerDialogue.show();
     }
 }
