@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:id="@+id/nav_item1"
+    android:title="Item 1"
+    android:icon="@drawable/color_picker_foreground" />
+<!--<item
+    android:id="@+id/nav_item2"
+    android:title="Item 2"
+    android:icon="@drawable/ic_item2" /> -->
+    <!-- Add more items as needed -->
+</menu>

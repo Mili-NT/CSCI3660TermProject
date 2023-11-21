@@ -1,0 +1,15 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/colorFragment">
+
+    <fragment
+        android:id="@+id/colorFragment"
+        android:name="com.zybooks.csci3660termproject.ColorFragment"
+        android:label="Color Fragment"
+        tools:layout="@layout/fragment_color" />
+
+    <!-- Add more fragments and connections as needed -->
+
+</navigation>
