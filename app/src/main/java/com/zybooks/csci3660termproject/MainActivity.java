@@ -1,8 +1,8 @@
 package com.zybooks.csci3660termproject;
 import androidx.appcompat.app.AppCompatActivity;
-//import androidx.navigation.NavController;
-//import androidx.navigation.Navigation;
-//import androidx.navigation.ui.NavigationUI;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import retrofit2.Call;
 import retrofit2.Callback;
