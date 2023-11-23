@@ -7,4 +7,9 @@
     <string name="color_fragment_pick">Pick Color</string>
     <string name="color_fragment_set">Set Color</string>
     <string name="color_fragment_title">Pick Your Color!</string>
+    <string name="choose_size">Choose Grid Size!</string>
+    <string name="size_6">6 x 6</string>
+    <string name="size_10">10 x 10</string>
+    <string name="size_12">12 x 12</string>
+
 </resources>

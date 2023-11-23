@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/colorFragment">
+    app:startDestination="@id/gameFragment">
 
     <fragment
         android:id="@+id/colorFragment"
@@ -10,6 +10,17 @@
         android:label="Color Fragment"
         tools:layout="@layout/fragment_color" />
 
+    <fragment
+    android:id="@+id/settingsFragment"
+    android:name="com.zybooks.csci3660termproject.SettingsFragment"
+    android:label="Settings Fragment"
+    tools:layout="@layout/fragment_settings" />
+
+    <fragment
+    android:id="@+id/gameFragment"
+    android:name="com.zybooks.csci3660termproject.GameFragment"
+    android:label="Game Fragment"
+    tools:layout="@layout/fragment_game" />
     <!-- Add more fragments and connections as needed -->
 
 </navigation>
