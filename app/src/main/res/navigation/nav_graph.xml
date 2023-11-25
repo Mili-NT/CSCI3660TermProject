@@ -22,5 +22,4 @@
     android:label="Game Fragment"
     tools:layout="@layout/fragment_game" />
     <!-- Add more fragments and connections as needed -->
-
 </navigation>

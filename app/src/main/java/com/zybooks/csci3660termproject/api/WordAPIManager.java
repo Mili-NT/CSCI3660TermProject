@@ -6,7 +6,6 @@ public class WordAPIManager {
 
     public static final String X_RAPIDAPI_HOST = "https://wordsapiv1.p.rapidapi.com/";
     public static final String X_RAPIDAPI_KEY = "";
-
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
