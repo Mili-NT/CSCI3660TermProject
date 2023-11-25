@@ -11,5 +11,6 @@
     <string name="size_6">6 x 6</string>
     <string name="size_10">10 x 10</string>
     <string name="size_12">12 x 12</string>
+    <string name="test">T</string>
 
 </resources>
