@@ -1,16 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_game"
-        android:title="Game"
+        android:title="@string/game_tab"
         android:icon="@drawable/game_icon" />
 
     <item
         android:id="@+id/nav_color"
-        android:title="Color"
+        android:title="@string/color_tab"
         android:icon="@drawable/color_picker_foreground" />
 
     <item
         android:id="@+id/nav_settings"
-        android:title="Settings"
+        android:title="@string/settings_tab"
         android:icon="@drawable/settings_icon" />
 </menu>
