@@ -2,22 +2,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/gameFragment">
+    app:startDestination="@id/game_Fragment">
 
     <fragment
-        android:id="@+id/gameFragment"
+        android:id="@+id/game_Fragment"
         android:name="com.zybooks.csci3660termproject.GameFragment"
         android:label="@string/game_tab"
         tools:layout="@layout/fragment_game" />
 
     <fragment
-        android:id="@+id/colorFragment"
+        android:id="@+id/color_Fragment"
         android:name="com.zybooks.csci3660termproject.ColorFragment"
         android:label="@string/color_tab"
         tools:layout="@layout/fragment_color" />
 
     <fragment
-        android:id="@+id/settingsFragment"
+        android:id="@+id/settings_Fragment"
         android:name="com.zybooks.csci3660termproject.SettingsFragment"
         android:label="@string/settings_tab"
         tools:layout="@layout/fragment_settings" />

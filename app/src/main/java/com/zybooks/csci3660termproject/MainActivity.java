@@ -2,6 +2,8 @@ package com.zybooks.csci3660termproject;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import retrofit2.Call;
@@ -29,9 +31,20 @@ public class MainActivity extends AppCompatActivity {
         // Create API interface
         wordAPI = retrofit.create(WordAPI.class);
 
-        bottomNav = findViewById(R.id.bottom_nav);
-        navController = Navigation.findNavController(this, R.id.fragment_container);
+        BottomNavigationView navView = findViewById(R.id.bottom_nav);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
 
-        NavigationUI.setupWithNavController(bottomNav, navController);
+        if (navHostFragment != null) {
+            NavController navController = navHostFragment.getNavController();
+
+            AppBarConfiguration appBarConfig = new AppBarConfiguration.Builder(
+                    R.id.game_Fragment, R.id.color_Fragment, R.id.settings_Fragment)
+                    .build();
+
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
+            NavigationUI.setupWithNavController(navView, navController);
+        }
+
     }
 }
