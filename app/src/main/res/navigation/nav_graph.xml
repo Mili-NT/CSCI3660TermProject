@@ -5,21 +5,20 @@
     app:startDestination="@id/gameFragment">
 
     <fragment
+        android:id="@+id/gameFragment"
+        android:name="com.zybooks.csci3660termproject.GameFragment"
+        android:label="@string/game_tab"
+        tools:layout="@layout/fragment_game" />
+
+    <fragment
         android:id="@+id/colorFragment"
         android:name="com.zybooks.csci3660termproject.ColorFragment"
-        android:label="Color Fragment"
+        android:label="@string/color_tab"
         tools:layout="@layout/fragment_color" />
 
     <fragment
-    android:id="@+id/settingsFragment"
-    android:name="com.zybooks.csci3660termproject.SettingsFragment"
-    android:label="Settings Fragment"
-    tools:layout="@layout/fragment_settings" />
-
-    <fragment
-    android:id="@+id/gameFragment"
-    android:name="com.zybooks.csci3660termproject.GameFragment"
-    android:label="Game Fragment"
-    tools:layout="@layout/fragment_game" />
-    <!-- Add more fragments and connections as needed -->
+        android:id="@+id/settingsFragment"
+        android:name="com.zybooks.csci3660termproject.SettingsFragment"
+        android:label="@string/settings_tab"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
