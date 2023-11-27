@@ -1,50 +1,69 @@
 package com.zybooks.csci3660termproject.responses;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
+/*
+{
+  "query": {
+    "limit": "100",
+    "page": "1"
+  },
+  "results": {
+    "total": 16197,
+    "data": [
+      "aachen",
+      "aargau",
+      <...>
+      "achira"
+    ]
+  }
+}
+
+
+*/
 public class WordAPIResponse {
-    @SerializedName("query")
-    private Query query;
+    private QueryObj query;
 
     @SerializedName("results")
-    private Results results;
+    private ResultsObj results;
 
-    public Query getQuery() {
+    public QueryObj getQuery() {
         return query;
     }
 
-    public Results getResults() {
+    public ResultsObj getResults() {
         return results;
     }
 
-    public static class Query {
+    public static class QueryObj {
         @SerializedName("limit")
-        private String limit;
-
+        private int limit;
         @SerializedName("page")
-        private String page;
+        private int page;
 
-        public String getLimit() {
+        public int getLimit() {
             return limit;
         }
 
-        public String getPage() {
+        public int getPage() {
             return page;
         }
     }
 
-    public static class Results {
+    public static class ResultsObj {
+        @SerializedName("data")
+        private List<String> data;
+
         @SerializedName("total")
         private int total;
 
-        @SerializedName("data")
-        private String[] data;
+        public List<String> getData() {
+            return data;
+        }
 
         public int getTotal() {
             return total;
-        }
-
-        public String[] getData() {
-            return data;
         }
     }
 }
