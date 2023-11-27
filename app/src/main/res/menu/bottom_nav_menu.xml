@@ -1,17 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- TODO: Fix game icon having a slightly visible background -->
     <item
-        android:id="@+id/nav_game"
+        android:id="@+id/game_Fragment"
         android:title="@string/game_tab"
         android:icon="@drawable/game_icon" />
 
     <item
-        android:id="@+id/nav_color"
+        android:id="@+id/color_Fragment"
         android:title="@string/color_tab"
         android:icon="@drawable/color_picker_foreground" />
 
     <item
-        android:id="@+id/nav_settings"
+        android:id="@+id/settings_Fragment"
         android:title="@string/settings_tab"
         android:icon="@drawable/settings_icon" />
 </menu>
