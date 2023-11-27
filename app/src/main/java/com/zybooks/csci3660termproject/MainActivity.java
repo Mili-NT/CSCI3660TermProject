@@ -17,18 +17,19 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navView;
     private NavHostFragment navHostFragment;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         // Create Retrofit client
         Retrofit retrofit = WordAPIManager.getClient();
         // Create API interface
         wordAPI = retrofit.create(WordAPI.class);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+        // Remove the type declaration to use the class-level variables
+        navView = findViewById(R.id.nav_view);
+        navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
 
         if (navHostFragment != null) {
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
                     R.id.game_Fragment, R.id.color_Fragment, R.id.settings_Fragment)
                     .build();
 
-            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
             NavigationUI.setupWithNavController(navView, navController);
         }
     }
