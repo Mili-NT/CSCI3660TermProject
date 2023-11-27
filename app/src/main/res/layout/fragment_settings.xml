@@ -10,13 +10,13 @@
         android:layout_height="match_parent"
         android:textSize="30sp"
         android:gravity="center"
-        android:layout_margin="20dp"
+        android:layout_margin="40dp"
         android:text="@string/choose_size" />
 
     <RadioGroup
         android:id="@+id/color_radio_group"
         android:layout_width="fill_parent"
-        android:layout_height="649dp"
+        android:layout_height="400dp"
         android:gravity="center"
         android:orientation="vertical">
 
