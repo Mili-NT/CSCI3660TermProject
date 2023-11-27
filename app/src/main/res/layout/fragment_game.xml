@@ -6,6 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".GameFragment">
 
+    <!--need to add area with generate words-->
+
+    <!--initial column and row size-->
     <GridLayout
         android:id="@+id/word_grid"
         android:layout_width="match_parent"
@@ -13,8 +16,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:columnCount="10"
-        android:rowCount="10"
+        android:columnCount="3"
+        android:rowCount="3"
         android:padding="30dp"
         android:background="@color/white">
     </GridLayout>
