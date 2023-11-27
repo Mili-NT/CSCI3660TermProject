@@ -1,14 +1,10 @@
 package com.zybooks.csci3660termproject;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -18,8 +14,8 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
     private WordAPI wordAPI;
-    private BottomNavigationView bottomNav;
-    private NavController navController;
+    private BottomNavigationView navView;
+    private NavHostFragment navHostFragment;
 
 
     @Override
@@ -31,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
         // Create API interface
         wordAPI = retrofit.create(WordAPI.class);
 
-        BottomNavigationView navView = findViewById(R.id.bottom_nav);
+        BottomNavigationView navView = findViewById(R.id.nav_view);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container);
+                .findFragmentById(R.id.nav_host_fragment);
 
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();
@@ -45,6 +41,6 @@ public class MainActivity extends AppCompatActivity {
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
             NavigationUI.setupWithNavController(navView, navController);
         }
-
     }
 }
+
