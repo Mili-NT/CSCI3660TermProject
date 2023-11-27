@@ -16,8 +16,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:columnCount="3"
-        android:rowCount="3"
+        android:columnCount="6"
+        android:rowCount="6"
         android:padding="30dp"
         android:background="@color/white">
     </GridLayout>
