@@ -71,24 +71,6 @@ public class GameFragment extends Fragment {
             wordAPI = WordAPIClient.getClient();
         }
 
-        // Listeners for the testing chipgroup in fragment_game.xml
-        /*
-        Chip testGetWordsChip = rootView.findViewById(R.id.chip5);
-        Chip testGetRandomWord = rootView.findViewById(R.id.chip4);
-        testGetWordsChip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getWordList("^[a-zA-Z]+$", 6, 100, 1);
-            }
-        });
-        testGetRandomWord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getRandomWord("^[a-zA-Z]+$", 6, 100, 1);
-            }
-        });
-        */
-
         return rootView;
     }
     public void getWordList(String letterPattern, int letters, int limit, int page) {

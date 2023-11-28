@@ -14,6 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.material.chip.ChipGroup;
 import com.zybooks.csci3660termproject.api.WordAPIManager;
 
 import java.util.Objects;
@@ -59,6 +60,26 @@ public class SettingsFragment extends Fragment {
             }
         });
         // GRID SIZE & CHIP LISTENERS
+        ChipGroup chipGroup = rootView.findViewById(R.id.chip_group);
+
+        chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId) {
+                int gridSize;
+                Log.d("GRD-DBG", "onCheckedChanged called.");
+                if (checkedId == R.id.chip_size6) {
+                    gridSize = 6;
+                } else if (checkedId == R.id.chip_size10) {
+                    gridSize = 10;
+                } else if (checkedId == R.id.chip_size12) {
+                    gridSize = 12;
+                } else {
+                    gridSize = 6;
+                }
+                Log.d("GRD-DBG", "onCheckedChanged, new gridSize: " + gridSize);
+                updateGameFragment(gridSize);
+            }
+        });
 
         return rootView;
     }
@@ -70,11 +91,13 @@ public class SettingsFragment extends Fragment {
         GameFragment gameFragment = new GameFragment();
         gameFragment.setArguments(bundle);
 
-        // Replace the current GameFragment
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment, gameFragment)
-                .addToBackStack(null)
-                .commit();
+        Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        if (!(currentFragment instanceof SettingsFragment)) {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment, gameFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
     private void saveApiKey() {
         // TODO: Add validity checking?
