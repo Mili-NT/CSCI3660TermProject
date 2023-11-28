@@ -25,9 +25,6 @@ public class MainActivity extends AppCompatActivity {
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();
 
-            AppBarConfiguration appBarConfig = new AppBarConfiguration.Builder(
-                    R.id.game_Fragment, R.id.color_Fragment, R.id.settings_Fragment)
-                    .build();
 
             NavigationUI.setupWithNavController(navView, navController);
         }
