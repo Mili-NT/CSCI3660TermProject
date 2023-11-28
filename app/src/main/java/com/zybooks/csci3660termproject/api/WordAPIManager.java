@@ -1,26 +1,20 @@
 package com.zybooks.csci3660termproject.api;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 public class WordAPIManager {
+    private static final String PREF_NAME = "APIKeyPref";
+    private static final String USER_API_KEY = "userAPIKey";
 
-    public static final String X_RAPIDAPI_HOST = "https://wordsapiv1.p.rapidapi.com/";
-    public static final String X_RAPIDAPI_KEY = "";
-    private static Retrofit retrofit = null;
+    public static void saveApiKey(Context context, String userAPIKey) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(USER_API_KEY, userAPIKey);
+        editor.apply();
+    }
 
-    public static Retrofit getClient() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(X_RAPIDAPI_HOST)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-        return retrofit;
-    }
-    public static String getXRapidAPIHost(){
-        return X_RAPIDAPI_HOST;
-    }
-    public static String getXRapidAPIKey() {
-        return X_RAPIDAPI_KEY;
+    public static String getApiKey(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(USER_API_KEY, null);
     }
 }

@@ -1,5 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- TODO: Fix game icon having a slightly visible background -->
     <item
         android:id="@+id/game_Fragment"
         android:title="@string/game_tab"

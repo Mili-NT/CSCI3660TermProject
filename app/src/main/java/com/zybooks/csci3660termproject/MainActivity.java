@@ -5,15 +5,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import retrofit2.Retrofit;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.zybooks.csci3660termproject.api.WordAPIManager;
-import com.zybooks.csci3660termproject.retrofit.WordAPI;
+
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-    private WordAPI wordAPI;
     private BottomNavigationView navView;
     private NavHostFragment navHostFragment;
 
@@ -21,12 +17,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Create Retrofit client
-        Retrofit retrofit = WordAPIManager.getClient();
-        // Create API interface
-        wordAPI = retrofit.create(WordAPI.class);
-
         // Remove the type declaration to use the class-level variables
         navView = findViewById(R.id.nav_view);
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
