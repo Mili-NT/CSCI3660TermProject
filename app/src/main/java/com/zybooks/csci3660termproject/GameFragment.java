@@ -31,12 +31,19 @@ import retrofit2.Response;
  */
 public class GameFragment extends Fragment {
     private WordAPIInterface wordAPI;
+    private int gridSize = 6; // Default grid value, can be changed
     public GameFragment() {
         // Required empty public constructor
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Code for receiving grid size selection from SettingsFragment
+        Bundle receivedBundle = getArguments();
+        if (receivedBundle != null) {
+            gridSize = receivedBundle.getInt("gridSize");
+            // TODO: Word Grid Code
+        }
         // Use the WordAPIManager to check SharedPref for a key
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
         // If there is no key (e.g. when the user first runs the app), redirect to the settings fragment

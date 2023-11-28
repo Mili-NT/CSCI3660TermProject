@@ -19,7 +19,4 @@ public class WordAPIClient {
         }
         return retrofit.create(WordAPIInterface.class);
     }
-    public static String getXRapidAPIHost(){
-        return X_RAPIDAPI_HOST;
-    }
 }

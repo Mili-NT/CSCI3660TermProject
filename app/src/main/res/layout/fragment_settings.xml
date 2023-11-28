@@ -30,6 +30,7 @@
             android:layout_marginBottom="20dp"
             android:background="@drawable/rounded_corner_button"
             android:text="@string/size_6"
+            android:checked="true"
             android:textAlignment="center"
             android:textSize="30sp" />
 
