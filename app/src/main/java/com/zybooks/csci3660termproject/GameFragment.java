@@ -31,7 +31,7 @@ import retrofit2.Response;
  */
 public class GameFragment extends Fragment {
     private WordAPIInterface wordAPI;
-    private int gridSize = 6; // Default grid value, can be changed
+    private int currentGridSize = 6; // Default grid value, can be changed
     public GameFragment() {
         // Required empty public constructor
     }
@@ -41,8 +41,12 @@ public class GameFragment extends Fragment {
         // Code for receiving grid size selection from SettingsFragment
         Bundle receivedBundle = getArguments();
         if (receivedBundle != null) {
-            gridSize = receivedBundle.getInt("gridSize");
+            Log.d("GRD-DBG", "STARTING GRID SIZE: " + currentGridSize);
+            int gridSize = receivedBundle.getInt("gridSize");
+            Log.d("GRD-DBG", "BUNDLE RECEIVED: " + gridSize);
+            currentGridSize = gridSize;
             // TODO: Word Grid Code
+            Log.d("GRD-DBG", "UPDATED GRID SIZE: " + currentGridSize);
         }
         // Use the WordAPIManager to check SharedPref for a key
         String userAPIKey = WordAPIManager.getApiKey(requireContext());

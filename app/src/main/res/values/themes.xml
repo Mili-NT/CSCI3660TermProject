@@ -6,6 +6,12 @@
     </style>
 
     <style name="Theme.Csci3660termproject" parent="Base.Theme.Csci3660termproject">
-        <!-- Customize chip background color -->
+    </style>
+    <style name="AppTheme.ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/light_orange</item>
+        <item name="chipCornerRadius">8dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">16sp</item>
+        <!-- Add other attributes as needed -->
     </style>
 </resources>
