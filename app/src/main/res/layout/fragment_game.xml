@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".GameFragment">
 
     <!--need to add area with generate words-->
 
     <!--initial column and row size-->
-    <GridLayout
+    <androidx.gridlayout.widget.GridLayout
         android:id="@+id/word_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:columnCount="3"
-        android:rowCount="3"
+        android:background="@color/white"
         android:padding="30dp"
-        android:background="@color/white">
-    </GridLayout>
+        app:columnCount="3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rowCount="3">
+
+    </androidx.gridlayout.widget.GridLayout>
+    <!--
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="355dp"
+        android:clickable="true"
+        android:contentDescription="Test Button"
+        android:src="@android:drawable/ic_dialog_email"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="338dp"
+        tools:ignore="MissingConstraints" />
+        -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

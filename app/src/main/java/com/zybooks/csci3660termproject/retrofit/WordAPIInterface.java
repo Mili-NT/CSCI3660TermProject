@@ -13,8 +13,9 @@ public interface WordAPIInterface {
     @Headers({
             "X-RapidAPI-Host: " + WordAPIClient.X_RAPIDAPI_HOST
     })
-    @GET("words")
+    @GET("words/")
     Call<WordAPIResponse> getWords(
+            @Header("X-RapidAPI-Key") String userAPIKey,
             @Query("letterPattern") String letterPattern,
             @Query("letters") int letters,
             @Query("limit") int limit,

@@ -6,13 +6,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WordAPIClient {
 
-    public static final String X_RAPIDAPI_HOST = "https://wordsapiv1.p.rapidapi.com/";
+    public static final String X_RAPIDAPI_HOST = "wordsapiv1.p.rapidapi.com";
+    private static final String BASE_URL = "https://wordsapiv1.p.rapidapi.com";
     private static Retrofit retrofit = null;
 
     public static WordAPIInterface getClient() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(X_RAPIDAPI_HOST)
+                    .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
