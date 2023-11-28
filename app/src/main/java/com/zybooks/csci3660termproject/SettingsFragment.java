@@ -68,10 +68,10 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        // Find views within the fragment's layout using rootView
+        // Gets the text field to change the hint and the button to implement the save listener
         Button saveApiKeyButton = rootView.findViewById(R.id.buttonSaveApiKey);
         EditText editTextApiKey = rootView.findViewById(R.id.editTextApiKey);
-        String userAPIKey = WordAPIManager.getApiKey(requireContext());
+        String userAPIKey = WordAPIManager.getApiKey(requireContext()); // requireContext() is required in fragments
         if (userAPIKey != null) {
             editTextApiKey.setHint(userAPIKey);
         }

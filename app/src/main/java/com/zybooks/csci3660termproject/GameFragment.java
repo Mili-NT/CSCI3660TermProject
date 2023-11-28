@@ -11,16 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.zybooks.csci3660termproject.api.WordAPIClient;
 import com.zybooks.csci3660termproject.api.WordAPIManager;
-import com.zybooks.csci3660termproject.responses.WordAPIResponse;
+import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
+import com.zybooks.csci3660termproject.responses.WordAPISearchResponse;
 import com.zybooks.csci3660termproject.retrofit.WordAPIInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,6 +45,7 @@ public class GameFragment extends Fragment {
             navController.navigate(R.id.settings_Fragment);
         }
         else {
+            // wordAPI is initialized here IF a key exists in the shared preference
             wordAPI = WordAPIClient.getClient();
         }
     }
@@ -56,36 +56,43 @@ public class GameFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_game, container, false);
         if (wordAPI == null) {
+            // wordAPI is initialized here when the user navigates back from SettingsFragment
             wordAPI = WordAPIClient.getClient();
         }
 
+        // Listeners for the testing chipgroup in fragment_game.xml
         /*
-        FloatingActionButton testButton = rootView.findViewById(R.id.floatingActionButton);
-        testButton.setOnClickListener(new View.OnClickListener() {
+        Chip testGetWordsChip = rootView.findViewById(R.id.chip5);
+        Chip testGetRandomWord = rootView.findViewById(R.id.chip4);
+        testGetWordsChip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                populateWordBank("^[a-zA-Z]+$", 6, 100, 1);
+                getWordList("^[a-zA-Z]+$", 6, 100, 1);
+            }
+        });
+        testGetRandomWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getRandomWord("^[a-zA-Z]+$", 6, 100, 1);
             }
         });
         */
 
         return rootView;
     }
-    public void populateWordBank(String letterPattern, int letters, int limit, int page) {
-        String preCallKey = WordAPIManager.getApiKey(requireContext());
-        Log.d("API-DBG", "populateWordBank: " + preCallKey);
-        Call<WordAPIResponse> call = wordAPI.getWords(
+    public void getWordList(String letterPattern, int letters, int limit, int page) {
+        Call<WordAPISearchResponse> call = wordAPI.getWords(
                 WordAPIManager.getApiKey(requireContext()),
                 letterPattern,
                 letters,
                 limit,
                 page
         );
-        call.enqueue(new Callback<WordAPIResponse>() {
+        call.enqueue(new Callback<WordAPISearchResponse>() {
             @Override
-            public void onResponse(@NonNull Call<WordAPIResponse> call, @NonNull Response<WordAPIResponse> response) {
+            public void onResponse(@NonNull Call<WordAPISearchResponse> call, @NonNull Response<WordAPISearchResponse> response) {
                 if (response.isSuccessful()) {
-                    WordAPIResponse apiResponse = response.body();
+                    WordAPISearchResponse apiResponse = response.body();
                     assert apiResponse != null;
                     List<String> randomWords = apiResponse.getResults().getData();
                     Log.d("API-DBG", "onResponse: " + randomWords.toString());
@@ -94,7 +101,35 @@ public class GameFragment extends Fragment {
                 }
             }
             @Override
-            public void onFailure(@NonNull Call<WordAPIResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<WordAPISearchResponse> call, @NonNull Throwable t) {
+                Log.e("API-DBG", "onFailure: ", t);
+            }
+        });
+    }
+
+    public void getRandomWord(String letterPattern, int letters, int limit, int page) {
+        Call<WordAPIRandomResponse> call = wordAPI.getRandomWord(
+                WordAPIManager.getApiKey(requireContext()),
+                letterPattern,
+                letters,
+                limit,
+                page,
+                true
+        );
+        call.enqueue(new Callback<WordAPIRandomResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<WordAPIRandomResponse> call, @NonNull Response<WordAPIRandomResponse> response) {
+                if (response.isSuccessful()) {
+                    WordAPIRandomResponse apiResponse = response.body();
+                    assert apiResponse != null;
+                    String randomWord = apiResponse.getWord();
+                    Log.d("API-DBG", "onResponse: " + randomWord);
+                } else {
+                    // TODO: handle the error response
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<WordAPIRandomResponse> call, @NonNull Throwable t) {
                 Log.e("API-DBG", "onFailure: ", t);
             }
         });

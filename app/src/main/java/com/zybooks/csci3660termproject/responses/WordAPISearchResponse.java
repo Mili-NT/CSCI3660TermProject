@@ -22,7 +22,7 @@ import java.util.List;
 
 
 */
-public class WordAPIResponse {
+public class WordAPISearchResponse {
     private QueryObj query;
 
     @SerializedName("results")
