@@ -75,7 +75,6 @@ public class SettingsFragment extends Fragment {
         saveApiKeyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Handle the button click here
                 saveApiKey();
             }
         });
@@ -84,12 +83,13 @@ public class SettingsFragment extends Fragment {
     }
 
     private void saveApiKey() {
+        // TODO: Add validity checking?
         // Retrieve the API key from the EditText
         EditText editTextApiKey = requireView().findViewById(R.id.editTextApiKey);
         String userAPIKey = editTextApiKey.getText().toString();
-        Log.d("API-DBG", "saveApiKey: " + userAPIKey);
         // Save to shared preferences
         WordAPIManager.saveApiKey(requireContext(), userAPIKey);
+        // TODO: Better looking toast/pop-up
         Toast.makeText(requireContext(), "API Key saved", Toast.LENGTH_SHORT).show();
     }
 }
