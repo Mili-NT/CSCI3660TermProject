@@ -4,9 +4,17 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.zybooks.csci3660termproject.api.WordAPIManager;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,7 +66,30 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        // Find views within the fragment's layout using rootView
+        Button saveApiKeyButton = rootView.findViewById(R.id.buttonSaveApiKey);
+        EditText editTextApiKey = rootView.findViewById(R.id.editTextApiKey);
+
+        saveApiKeyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Handle the button click here
+                saveApiKey();
+            }
+        });
+
+        return rootView;
+    }
+
+    private void saveApiKey() {
+        // Retrieve the API key from the EditText
+        EditText editTextApiKey = requireView().findViewById(R.id.editTextApiKey);
+        String userAPIKey = editTextApiKey.getText().toString();
+        Log.d("API-DBG", "saveApiKey: " + userAPIKey);
+        // Save to shared preferences
+        WordAPIManager.saveApiKey(requireContext(), userAPIKey);
+        Toast.makeText(requireContext(), "API Key saved", Toast.LENGTH_SHORT).show();
     }
 }
