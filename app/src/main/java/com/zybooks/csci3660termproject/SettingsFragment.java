@@ -71,7 +71,10 @@ public class SettingsFragment extends Fragment {
         // Find views within the fragment's layout using rootView
         Button saveApiKeyButton = rootView.findViewById(R.id.buttonSaveApiKey);
         EditText editTextApiKey = rootView.findViewById(R.id.editTextApiKey);
-
+        String userAPIKey = WordAPIManager.getApiKey(requireContext());
+        if (userAPIKey != null) {
+            editTextApiKey.setHint(userAPIKey);
+        }
         saveApiKeyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,5 +94,6 @@ public class SettingsFragment extends Fragment {
         WordAPIManager.saveApiKey(requireContext(), userAPIKey);
         // TODO: Better looking toast/pop-up
         Toast.makeText(requireContext(), "API Key saved", Toast.LENGTH_SHORT).show();
+        editTextApiKey.setHint(userAPIKey);
     }
 }

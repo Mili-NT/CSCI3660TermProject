@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.zybooks.csci3660termproject.api.WordAPIManager;
 import com.zybooks.csci3660termproject.retrofit.WordAPIInterface;
@@ -28,6 +29,7 @@ public class GameFragment extends Fragment {
         // Use the WordAPIManager to check SharedPref for a key
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
         // If there is no key (e.g. when the user first runs the app), redirect to the settings fragment
+        Log.d("API-DBG", "GameFragment Check: " + userAPIKey);
         if (userAPIKey == null) {
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(R.id.settings_Fragment);
