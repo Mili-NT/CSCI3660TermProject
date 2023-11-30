@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -45,7 +46,6 @@ public class GameFragment extends Fragment {
             int gridSize = receivedBundle.getInt("gridSize");
             Log.d("GRD-DBG", "BUNDLE RECEIVED: " + gridSize);
             currentGridSize = gridSize;
-            // TODO: Word Grid Code
             Log.d("GRD-DBG", "UPDATED GRID SIZE: " + currentGridSize);
         }
         // Use the WordAPIManager to check SharedPref for a key
