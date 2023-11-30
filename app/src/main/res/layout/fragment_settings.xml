@@ -12,6 +12,7 @@
         android:layout_height="84dp"
         android:gravity="center"
         android:text="@string/choose_size"
+        android:textStyle="bold"
         android:textSize="40sp"
         style="@style/primaryLabel"/>
 
@@ -90,6 +91,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:text="@string/enter_your_api_key"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="35sp" />
 
         <!-- Add an EditText for entering the API key -->
