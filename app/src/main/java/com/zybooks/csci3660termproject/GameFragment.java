@@ -127,4 +127,34 @@ public class GameFragment extends Fragment {
             }
         });
     }
+
+    //Basic Template for grid for Word Search (change as needed to fix error and work with app)
+    /*Define the size of the grid
+    int rows = 6;
+    int cols = 6;
+
+    // Create a 2D array to represent the grid
+    String[][] grid = new String[rows][cols];
+
+    // Fill the grid with the string "A"
+        for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            grid[i][j] = "A";
+        }
+    }
+
+    // Display the grid
+        for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            System.out.print(grid[i][j] + " ");
+        }
+        System.out.println(); // Move to the next line after each row
+
+
+    }
+
+     */
+
+
+
 }
