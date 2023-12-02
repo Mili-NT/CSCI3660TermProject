@@ -4,47 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameFragment">
+    tools:context=".GameFragment"
+    android:background="@drawable/starry_sky_1">
 
     <!--need to add area with generate words-->
 
+    <!--Word search grid-->
     <!--initial column and row size-->
-
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/word_grid"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:padding="30dp"
+        android:layout_height="wrap_content"
         app:columnCount="6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:rowCount="6">
-        <!--
-        <com.google.android.material.chip.ChipGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:singleSelection="true"
-            tools:ignore="MissingConstraints">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip5"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Words"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip4"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Rand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.chip.ChipGroup>
-        -->
+        app:rowCount="6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
     </androidx.gridlayout.widget.GridLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ColorFragment"
     tools:ignore="HardcodedText"
-    android:background="@drawable/background">
+    android:background="@drawable/starry_sky_1">
 
 
     <!--GeeksforGeeks Text-->
@@ -19,7 +19,8 @@
         android:layout_marginTop="32dp"
         android:text="@string/color_fragment_title"
         android:textSize="42sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        style="@style/primaryLabel"/>
 
     <!--Pick color Button-->
     <Button
@@ -30,6 +31,8 @@
         android:layout_marginTop="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/purple"
+        android:textColor="@color/black"
         android:text="@string/color_fragment_pick" />
 
     <TextView
@@ -38,10 +41,11 @@
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
         android:textSize="18sp"
-        android:text="@string/color_fragment_name" />
+        android:text="@string/color_fragment_name"
+        style="@style/primaryLabel"/>
 
     <!--sample view to preview selected color by user-->
-    <!--by default this has been set to darker gery-->
+    <!--by default this has been set to darker grey-->
     <!--this can be overridden after user chose the
          color from color picker-->
     <!--which has been handled in the MainActivity.java-->
@@ -63,6 +67,8 @@
         android:layout_marginTop="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/purple"
         android:text="@string/color_fragment_set" />
 
 </LinearLayout>

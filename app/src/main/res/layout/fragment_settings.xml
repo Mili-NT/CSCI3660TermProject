@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@drawable/background">
+    android:background="@drawable/starry_sky_1">
 
     <TextView
         android:layout_width="match_parent"
@@ -90,7 +90,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:text="@string/enter_your_api_key"
-            android:textSize="35sp" />
+            android:textSize="35sp"
+            style="@style/primaryLabel"/>
 
         <!-- Add an EditText for entering the API key -->
         <EditText
@@ -109,7 +110,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/save_api_key" />
+            android:text="@string/save_api_key"
+            android:backgroundTint="@color/purple"
+            android:textColor="@color/black"/>
 
     </LinearLayout>
 
