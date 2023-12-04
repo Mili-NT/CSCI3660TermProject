@@ -14,7 +14,6 @@
     <!-- Theme of chip buttons -->
     <style name="AppTheme.ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@color/purple</item>
-        <item name="chipCornerRadius">8dp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/honeypirls</item>
