@@ -18,8 +18,9 @@
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
         android:text="@string/color_fragment_title"
-        android:textSize="42sp"
+        android:textSize="52sp"
         android:textStyle="bold"
+        android:background="@color/black"
         style="@style/primaryLabel"/>
 
     <!--Pick color Button-->
@@ -33,15 +34,18 @@
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/purple"
         android:textColor="@color/black"
-        android:text="@string/color_fragment_pick" />
+        android:text="@string/color_fragment_pick"
+        android:fontFamily="@font/honeypirls"
+        android:textSize="30sp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:text="@string/color_fragment_name"
+        android:background="@color/black"
         style="@style/primaryLabel"/>
 
     <!--sample view to preview selected color by user-->
@@ -69,6 +73,8 @@
         android:layout_marginEnd="32dp"
         android:textColor="@color/black"
         android:backgroundTint="@color/purple"
-        android:text="@string/color_fragment_set" />
+        android:text="@string/color_fragment_set"
+        android:fontFamily="@font/honeypirls"
+        android:textSize="30sp"/>
 
 </LinearLayout>
