@@ -8,6 +8,7 @@
     <!-- Main font style -->
     <style name="primaryLabel">
         <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/honeypirls</item>
     </style>
 
     <!-- Theme of chip buttons -->
@@ -16,6 +17,7 @@
         <item name="chipCornerRadius">8dp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/honeypirls</item>
     </style>
 
 </resources>
