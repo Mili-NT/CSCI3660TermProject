@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import com.google.android.material.chip.Chip;
@@ -21,7 +22,10 @@ import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
 import com.zybooks.csci3660termproject.responses.WordAPISearchResponse;
 import com.zybooks.csci3660termproject.retrofit.WordAPIInterface;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,6 +70,18 @@ public class GameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_game, container, false);
+        List<String> words = new ArrayList<>();
+        words.add("JAVA");
+        words.add("PROGRAM");
+        words.add("ALGORITHM");
+        words.add("CODE");
+
+        char[][] wordSearchGrid = generateWordSearchGrid(12, 12, words);
+        GridView gridView = rootView.findViewById(R.id.gridView);
+        WordSearchAdapter adapter = new WordSearchAdapter(requireContext(), wordSearchGrid);
+        gridView.setAdapter(adapter);
+
+
         if (wordAPI == null) {
             // wordAPI is initialized here when the user navigates back from SettingsFragment
             wordAPI = WordAPIClient.getClient();
@@ -127,34 +143,124 @@ public class GameFragment extends Fragment {
             }
         });
     }
+    public static char[][] generateWordSearchGrid(int rows, int cols, List<String> words) {
+        char[][] grid = new char[rows][cols];
+        Random random = new Random();
 
-    //Basic Template for grid for Word Search (change as needed to fix error and work with app)
-    /*Define the size of the grid
-    int rows = 6;
-    int cols = 6;
+        // Shuffle the list of words for better randomness
+        Collections.shuffle(words);
 
-    // Create a 2D array to represent the grid
-    String[][] grid = new String[rows][cols];
+        // Place words in the grid
+        for (String word : words) {
+            boolean placed = false;
+            int attempts = 0;
 
-    // Fill the grid with the string "A"
+            while (!placed && attempts < 100) { // Increase attempts as needed
+                int direction = random.nextInt(8);
+                int startRow = random.nextInt(rows);
+                int startCol = random.nextInt(cols);
+
+                int stepRow = 0;
+                int stepCol = 0;
+
+                switch (direction) {
+                    case 0: // Horizontal (left to right)
+                        stepCol = 1;
+                        break;
+                    case 1: // Horizontal (right to left)
+                        stepCol = -1;
+                        break;
+                    case 2: // Vertical (top to bottom)
+                        stepRow = 1;
+                        break;
+                    case 3: // Vertical (bottom to top)
+                        stepRow = -1;
+                        break;
+                    case 4: // Diagonal (top-left to bottom-right)
+                        stepRow = 1;
+                        stepCol = 1;
+                        break;
+                    case 5: // Diagonal (bottom-right to top-left)
+                        stepRow = -1;
+                        stepCol = -1;
+                        break;
+                    case 6: // Diagonal (top-right to bottom-left)
+                        stepRow = 1;
+                        stepCol = -1;
+                        break;
+                    case 7: // Diagonal (bottom-left to top-right)
+                        stepRow = -1;
+                        stepCol = 1;
+                        break;
+                }
+
+                int currentRow = startRow;
+                int currentCol = startCol;
+                boolean fits = true;
+
+                for (char letter : word.toCharArray()) {
+                    if (currentRow < 0 || currentRow >= rows || currentCol < 0 || currentCol >= cols || grid[currentRow][currentCol] != 0) {
+                        fits = false;
+                        break;
+                    }
+
+                    currentRow += stepRow;
+                    currentCol += stepCol;
+                }
+
+                if (fits) {
+                    currentRow = startRow;
+                    currentCol = startCol;
+                    for (char letter : word.toCharArray()) {
+                        grid[currentRow][currentCol] = letter;
+                        currentRow += stepRow;
+                        currentCol += stepCol;
+                    }
+                    placed = true;
+                }
+
+                attempts++;
+            }
+        }
+
+        // Fill the empty spaces with random letters
         for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            grid[i][j] = "A";
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] == 0) {
+                    grid[i][j] = (char) ('A' + random.nextInt(26));
+                }
+            }
+        }
+
+        return grid;
+    }
+
+    private static void printWordSearchGrid(char[][] grid) {
+        for (char[] row : grid) {
+            for (char cell : row) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
         }
     }
 
-    // Display the grid
-        for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            System.out.print(grid[i][j] + " ");
-        }
-        System.out.println(); // Move to the next line after each row
+    // Add this method to GameFragment
+    private void displayWordSearchGrid(View view, char[][] grid) {
+        // Find the TextView or any other suitable view in your game_fragment.xml
+        // and update its text to display the word search grid
 
+        // For example, assuming you have a TextView with id "wordSearchTextView":
+        GridView wordSearchTextView = view.findViewById(R.id.gridView);
+
+        // Convert the 2D char array to a string for display
+        StringBuilder displayText = new StringBuilder();
+        for (char[] row : grid) {
+            for (char cell : row) {
+                displayText.append(cell).append(" ");
+            }
+            displayText.append("\n");
+        }
 
     }
-
-     */
-
-
 
 }

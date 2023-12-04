@@ -11,15 +11,20 @@
 
     <!--Word search grid-->
     <!--initial column and row size-->
-    <androidx.gridlayout.widget.GridLayout
-        android:id="@+id/word_grid"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        app:columnCount="6"
-        app:rowCount="6"
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="392dp"
+        android:layout_height="476dp"
+        android:layout_marginStart="8dp"
+        android:background="#FFF"
+        android:horizontalSpacing="4dp"
+        android:numColumns="12"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </androidx.gridlayout.widget.GridLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
