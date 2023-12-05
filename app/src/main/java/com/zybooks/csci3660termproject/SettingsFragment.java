@@ -51,6 +51,7 @@ public class SettingsFragment extends Fragment {
         EditText editTextApiKey = rootView.findViewById(R.id.editTextApiKey);
         String userAPIKey = WordAPIManager.getApiKey(requireContext()); // requireContext() is required in fragments
         if (userAPIKey != null) {
+            Log.d("BTN-DBG", "setHint called");
             editTextApiKey.setHint(userAPIKey); // Updates text hint to display key -- not necessary but looks good
         }
         saveApiKeyButton.setOnClickListener(new View.OnClickListener() {

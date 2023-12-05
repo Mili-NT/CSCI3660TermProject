@@ -41,6 +41,8 @@ public class GameFragment extends Fragment {
     private WordAPIInterface wordAPI;
     private int currentGridSize = 6; // Default grid value, can be changed
 
+    private boolean hasShownPopup = false;
+
     public GameFragment() {
         // Required empty public constructor
     }
@@ -59,7 +61,9 @@ public class GameFragment extends Fragment {
         // Use the WordAPIManager to check SharedPref for a key
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
         // If there is no key (e.g. when the user first runs the app), redirect to the settings fragment
+        Log.d("KEY-DBG", "API Key: " + userAPIKey);
         if (userAPIKey == null) {
+            Log.d("KEY-DBG", "NULL KEY DETECTED");
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(R.id.settings_Fragment);
         }
@@ -77,14 +81,17 @@ public class GameFragment extends Fragment {
 
     }
         //this is for the pop window for the game
-    private void showPopup(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Welcome to CosmicCross!");
-        builder.setMessage("Try and find all of the words to complete the crossword! Happy solving!");
-        builder.setPositiveButton("I'm ready to solve!",null);
+    private void showPopup() {
+        if (!hasShownPopup && isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Welcome to CosmicCross!");
+            builder.setMessage("Try and find all of the words to complete the crossword! Happy solving!");
+            builder.setPositiveButton("I'm ready to solve!", null);
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            hasShownPopup = true;
+        }
     }
 
     @Override
@@ -92,6 +99,12 @@ public class GameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_game, container, false);
+        getRandomWord(
+                "^[a-zA-Z]+$",
+                6,
+                1,
+                1
+        );
         List<String> words = new ArrayList<>();
         words.add("JAVA");
         words.add("PROGRAM");
@@ -169,7 +182,7 @@ public class GameFragment extends Fragment {
                     WordAPIRandomResponse apiResponse = response.body();
                     assert apiResponse != null;
                     String randomWord = apiResponse.getWord();
-                    Log.d("API-DBG", "onResponse: " + randomWord);
+                    Log.d("API-DBG", "Word received: " + randomWord);
                 } else {
                     // TODO: handle the error response
                 }
