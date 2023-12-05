@@ -37,6 +37,7 @@ import retrofit2.Response;
 public class GameFragment extends Fragment {
     private WordAPIInterface wordAPI;
     private int currentGridSize = 6; // Default grid value, can be changed
+
     public GameFragment() {
         // Required empty public constructor
     }
@@ -63,6 +64,7 @@ public class GameFragment extends Fragment {
             // wordAPI is initialized here IF a key exists in the shared preference
             wordAPI = WordAPIClient.getClient();
         }
+
     }
 
     @Override
@@ -75,6 +77,21 @@ public class GameFragment extends Fragment {
         words.add("PROGRAM");
         words.add("ALGORITHM");
         words.add("CODE");
+
+        // Find the existing TextView in your layout with the id "wordBank"
+        TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
+
+        // Create a StringBuilder to build the text for the TextView
+        StringBuilder wordBankText = new StringBuilder();
+
+        // Append each word to the StringBuilder
+        for (String word : words) {
+            wordBankText.append(word).append("\n"); // Add a newline for each word
+        }
+
+        // Set the text of the TextView to the built text
+        wordBankTextView.setText(wordBankText.toString());
+
 
         char[][] wordSearchGrid = generateWordSearchGrid(12, 12, words);
         GridView gridView = rootView.findViewById(R.id.gridView);
@@ -244,12 +261,8 @@ public class GameFragment extends Fragment {
         }
     }
 
-    // Add this method to GameFragment
     private void displayWordSearchGrid(View view, char[][] grid) {
-        // Find the TextView or any other suitable view in your game_fragment.xml
-        // and update its text to display the word search grid
 
-        // For example, assuming you have a TextView with id "wordSearchTextView":
         GridView wordSearchTextView = view.findViewById(R.id.gridView);
 
         // Convert the 2D char array to a string for display

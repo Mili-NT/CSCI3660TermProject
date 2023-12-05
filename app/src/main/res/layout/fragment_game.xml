@@ -11,6 +11,17 @@
 
     <!--Word search grid-->
     <!--initial column and row size-->
+
+    <TextView
+        android:id="@+id/word_bank"
+        android:layout_width="222dp"
+        android:layout_height="103dp"
+        android:layout_marginLeft="92dp"
+        android:layout_marginTop="56dp"
+        android:background="#FFF"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridView" />
+
     <GridView
         android:id="@+id/gridView"
         android:layout_width="392dp"

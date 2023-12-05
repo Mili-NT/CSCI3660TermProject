@@ -66,11 +66,8 @@ public class WordSearchAdapter extends BaseAdapter {
         return textView;
     }
 
-    // Method to handle click events on letters
     // Declare a global variable to store the selected word
     private StringBuilder selectedWord = new StringBuilder();
-
-// ...
 
     // Method to handle click events on letters
     private void handleLetterClick(int row, int col) {
