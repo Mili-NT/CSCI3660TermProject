@@ -7,12 +7,15 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -64,7 +67,24 @@ public class GameFragment extends Fragment {
             // wordAPI is initialized here IF a key exists in the shared preference
             wordAPI = WordAPIClient.getClient();
         }
+//handler for the pop up message
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showPopup();
+            }
+        }, 1000);
 
+    }
+//this is for the pop window for the game
+    private void showPopup(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Test Welcome!");
+        builder.setMessage("This is some example text.");
+        builder.setPositiveButton("OK",null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
