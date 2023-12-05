@@ -67,7 +67,7 @@ public class GameFragment extends Fragment {
             // wordAPI is initialized here IF a key exists in the shared preference
             wordAPI = WordAPIClient.getClient();
         }
-//handler for the pop up message
+            //handler for the pop up message
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -76,12 +76,12 @@ public class GameFragment extends Fragment {
         }, 1000);
 
     }
-//this is for the pop window for the game
+        //this is for the pop window for the game
     private void showPopup(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Test Welcome!");
-        builder.setMessage("This is some example text.");
-        builder.setPositiveButton("OK",null);
+        builder.setTitle("Welcome to CosmicCross!");
+        builder.setMessage("Try and find all of the words to complete the crossword! Happy solving!");
+        builder.setPositiveButton("I'm ready to solve!",null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
