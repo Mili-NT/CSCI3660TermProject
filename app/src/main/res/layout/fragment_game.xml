@@ -4,47 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameFragment">
+    tools:context=".GameFragment"
+    android:background="@drawable/starry_sky_1">
 
     <!--need to add area with generate words-->
 
+    <!--Word search grid-->
     <!--initial column and row size-->
 
-    <androidx.gridlayout.widget.GridLayout
-        android:id="@+id/word_grid"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:padding="30dp"
-        app:columnCount="6"
-        app:layout_constraintEnd_toEndOf="parent"
+    <TextView
+        android:id="@+id/word_bank"
+        android:layout_width="222dp"
+        android:layout_height="103dp"
+        android:layout_marginLeft="92dp"
+        android:layout_marginTop="56dp"
+        android:background="#FFF"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridView" />
+
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="392dp"
+        android:layout_height="476dp"
+        android:layout_marginStart="8dp"
+        android:background="#FFF"
+        android:horizontalSpacing="4dp"
+        android:numColumns="12"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:rowCount="6">
-        <!--
-        <com.google.android.material.chip.ChipGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:singleSelection="true"
-            tools:ignore="MissingConstraints">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip5"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Words"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip4"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Rand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.chip.ChipGroup>
-        -->
-    </androidx.gridlayout.widget.GridLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

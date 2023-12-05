@@ -7,8 +7,10 @@
     android:orientation="vertical"
     tools:context=".ColorFragment"
     tools:ignore="HardcodedText"
-    android:background="@drawable/background">
+    android:background="@drawable/starry_sky_1">
 
+
+    <!--GeeksforGeeks Text-->
     <TextView
         android:id="@+id/gfg_heading"
         android:layout_width="wrap_content"
@@ -16,11 +18,12 @@
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
         android:text="@string/color_fragment_title"
-        android:textColor="@color/white"
-        android:textSize="42sp"
-        android:textStyle="bold" />
+        android:textSize="52sp"
+        android:textStyle="bold"
+        android:background="@color/black"
+        style="@style/primaryLabel"/>
 
-
+    <!--Pick color Button-->
     <Button
         android:id="@+id/pick_color_button"
         android:layout_width="match_parent"
@@ -29,18 +32,27 @@
         android:layout_marginTop="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/purple"
+        android:textColor="@color/black"
         android:text="@string/color_fragment_pick"
-        />
+        android:fontFamily="@font/honeypirls"
+        android:textSize="30sp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:text="@string/color_fragment_name"
-        android:textColor="@color/white"/>
+        android:background="@color/black"
+        style="@style/primaryLabel"/>
 
+    <!--sample view to preview selected color by user-->
+    <!--by default this has been set to darker grey-->
+    <!--this can be overridden after user chose the
+         color from color picker-->
+    <!--which has been handled in the MainActivity.java-->
     <View
         android:id="@+id/preview_selected_color"
         android:layout_width="48dp"
@@ -49,6 +61,8 @@
         android:background="@android:color/darker_gray"
         android:layout_marginTop="8dp" />
 
+    <!--set color button to overwrite the
+        color for GeeksforGeeks text-->
     <Button
         android:id="@+id/set_color_button"
         android:layout_width="match_parent"
@@ -57,7 +71,10 @@
         android:layout_marginTop="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/purple"
         android:text="@string/color_fragment_set"
-        />
+        android:fontFamily="@font/honeypirls"
+        android:textSize="30sp"/>
 
 </LinearLayout>

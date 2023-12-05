@@ -5,15 +5,18 @@
 
     <style name="Theme.Csci3660termproject" parent="Base.Theme.Csci3660termproject"></style>
 
-    <style name="AppTheme.ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
-        <item name="chipBackgroundColor">@color/light_orange</item>
-        <item name="chipCornerRadius">8dp</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:textSize">16sp</item>
-        <!-- Add other attributes as needed -->
-    </style>
-
+    <!-- Main font style -->
     <style name="primaryLabel">
         <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/honeypirls</item>
     </style>
+
+    <!-- Theme of chip buttons -->
+    <style name="AppTheme.ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/purple</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/honeypirls</item>
+    </style>
+
 </resources>
