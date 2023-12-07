@@ -12,13 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.chip.Chip;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+
 import com.zybooks.csci3660termproject.api.WordAPIClient;
 import com.zybooks.csci3660termproject.api.WordAPIManager;
 import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
@@ -26,9 +26,7 @@ import com.zybooks.csci3660termproject.responses.WordAPISearchResponse;
 import com.zybooks.csci3660termproject.retrofit.WordAPIInterface;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +38,7 @@ import retrofit2.Response;
 public class GameFragment extends Fragment {
     private WordAPIInterface wordAPI;
     private int currentGridSize = 6; // Default grid value, can be changed
+
 
     private boolean hasShownPopup = false;
 
@@ -99,6 +98,8 @@ public class GameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_game, container, false);
+        TableLayout tableLayout = rootView.findViewById(R.id.tableLayout);
+
         getRandomWord(
                 "^[a-zA-Z]+$",
                 6,
@@ -107,9 +108,16 @@ public class GameFragment extends Fragment {
         );
         List<String> words = new ArrayList<>();
         words.add("JAVA");
-        words.add("PROGRAM");
-        words.add("ALGORITHM");
+        words.add("PRO");
+        words.add("TEST");
         words.add("CODE");
+
+        char[][] wordSearchGrid = generateWordSearchGrid(words);
+
+        // Check if currentGridSize has changed or if the grid is not initialized
+        if (wordSearchGrid == null || wordSearchGrid.length != currentGridSize || wordSearchGrid[0].length != currentGridSize) {
+            wordSearchGrid = generateWordSearchGrid(words);
+        }
 
         // Find the existing TextView in your layout with the id "wordBank"
         TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
@@ -126,16 +134,13 @@ public class GameFragment extends Fragment {
         wordBankTextView.setText(wordBankText.toString());
 
 
-        char[][] wordSearchGrid = generateWordSearchGrid(12, 12, words);
-        GridView gridView = rootView.findViewById(R.id.gridView);
-        WordSearchAdapter adapter = new WordSearchAdapter(requireContext(), wordSearchGrid);
-        gridView.setAdapter(adapter);
-
 
         if (wordAPI == null) {
             // wordAPI is initialized here when the user navigates back from SettingsFragment
             wordAPI = WordAPIClient.getClient();
         }
+
+        displayGrid(tableLayout, wordSearchGrid);
 
         return rootView;
     }
@@ -193,91 +198,23 @@ public class GameFragment extends Fragment {
             }
         });
     }
-    public static char[][] generateWordSearchGrid(int rows, int cols, List<String> words) {
-        char[][] grid = new char[rows][cols];
-        Random random = new Random();
 
-        // Shuffle the list of words for better randomness
-        Collections.shuffle(words);
+    private char[][] generateWordSearchGrid(List<String> words) {
+        int numRows = currentGridSize;
+        int numCols = currentGridSize;
+
+        char[][] grid = new char[numRows][numCols];
 
         // Place words in the grid
         for (String word : words) {
-            boolean placed = false;
-            int attempts = 0;
-
-            while (!placed && attempts < 100) { // Increase attempts as needed
-                int direction = random.nextInt(8);
-                int startRow = random.nextInt(rows);
-                int startCol = random.nextInt(cols);
-
-                int stepRow = 0;
-                int stepCol = 0;
-
-                switch (direction) {
-                    case 0: // Horizontal (left to right)
-                        stepCol = 1;
-                        break;
-                    case 1: // Horizontal (right to left)
-                        stepCol = -1;
-                        break;
-                    case 2: // Vertical (top to bottom)
-                        stepRow = 1;
-                        break;
-                    case 3: // Vertical (bottom to top)
-                        stepRow = -1;
-                        break;
-                    case 4: // Diagonal (top-left to bottom-right)
-                        stepRow = 1;
-                        stepCol = 1;
-                        break;
-                    case 5: // Diagonal (bottom-right to top-left)
-                        stepRow = -1;
-                        stepCol = -1;
-                        break;
-                    case 6: // Diagonal (top-right to bottom-left)
-                        stepRow = 1;
-                        stepCol = -1;
-                        break;
-                    case 7: // Diagonal (bottom-left to top-right)
-                        stepRow = -1;
-                        stepCol = 1;
-                        break;
-                }
-
-                int currentRow = startRow;
-                int currentCol = startCol;
-                boolean fits = true;
-
-                for (char letter : word.toCharArray()) {
-                    if (currentRow < 0 || currentRow >= rows || currentCol < 0 || currentCol >= cols || grid[currentRow][currentCol] != 0) {
-                        fits = false;
-                        break;
-                    }
-
-                    currentRow += stepRow;
-                    currentCol += stepCol;
-                }
-
-                if (fits) {
-                    currentRow = startRow;
-                    currentCol = startCol;
-                    for (char letter : word.toCharArray()) {
-                        grid[currentRow][currentCol] = letter;
-                        currentRow += stepRow;
-                        currentCol += stepCol;
-                    }
-                    placed = true;
-                }
-
-                attempts++;
-            }
+            placeWord(grid, word, 100); // Try placing each word up to 100 times
         }
 
-        // Fill the empty spaces with random letters
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (grid[i][j] == 0) {
-                    grid[i][j] = (char) ('A' + random.nextInt(26));
+        // Fill the remaining empty spaces with random letters
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                if (grid[i][j] == '\0') {
+                    grid[i][j] = (char) ('A' + (int) (Math.random() * 26));
                 }
             }
         }
@@ -285,28 +222,85 @@ public class GameFragment extends Fragment {
         return grid;
     }
 
-    private static void printWordSearchGrid(char[][] grid) {
-        for (char[] row : grid) {
-            for (char cell : row) {
-                System.out.print(cell + " ");
+
+    private void placeWord(char[][] grid, String word, int maxAttempts) {
+        int length = word.length();
+        int startRow, startCol;
+        boolean placed = false;
+        int attempts = 0;
+
+        while (!placed && attempts < maxAttempts) {
+            startRow = (int) (Math.random() * currentGridSize);
+            startCol = (int) (Math.random() * currentGridSize);
+
+            int direction = (int) (Math.random() * 8); // 0 to 7
+
+            int rowIncrement = 0;
+            int colIncrement = 0;
+
+            switch (direction) {
+                case 0: colIncrement = 1; break; // Horizontal (left to right)
+                case 1: colIncrement = -1; break; // Horizontal (right to left)
+                case 2: rowIncrement = 1; break; // Vertical (top to bottom)
+                case 3: rowIncrement = -1; break; // Vertical (bottom to top)
+                case 4: rowIncrement = 1; colIncrement = 1; break; // Diagonal (top-left to bottom-right)
+                case 5: rowIncrement = -1; colIncrement = -1; break; // Diagonal (bottom-right to top-left)
+                case 6: rowIncrement = 1; colIncrement = -1; break; // Diagonal (top-right to bottom-left)
+                case 7: rowIncrement = -1; colIncrement = 1; break; // Diagonal (bottom-left to top-right)
             }
-            System.out.println();
+
+            if (canPlaceWord(grid, word, startRow, startCol, rowIncrement, colIncrement)) {
+                for (int i = 0; i < length; i++) {
+                    int row = startRow + i * rowIncrement;
+                    int col = startCol + i * colIncrement;
+
+                    grid[row][col] = word.charAt(i);
+                }
+
+                placed = true;
+            }
+
+            attempts++;
         }
     }
 
-    private void displayWordSearchGrid(View view, char[][] grid) {
+    private boolean canPlaceWord(char[][] grid, String word, int startRow, int startCol, int rowIncrement, int colIncrement) {
+        int length = word.length();
 
-        GridView wordSearchTextView = view.findViewById(R.id.gridView);
+        int endRow = startRow + (length - 1) * rowIncrement;
+        int endCol = startCol + (length - 1) * colIncrement;
 
-        // Convert the 2D char array to a string for display
-        StringBuilder displayText = new StringBuilder();
-        for (char[] row : grid) {
-            for (char cell : row) {
-                displayText.append(cell).append(" ");
+        if (endRow >= 0 && endRow < currentGridSize && endCol >= 0 && endCol < currentGridSize) {
+            for (int i = 0; i < length; i++) {
+                int row = startRow + i * rowIncrement;
+                int col = startCol + i * colIncrement;
+
+                if (grid[row][col] != '\0' && grid[row][col] != word.charAt(i)) {
+                    return false;
+                }
             }
-            displayText.append("\n");
+
+            return true;
         }
 
+        return false;
+    }
+
+
+    // Method to display the word search grid in the TableLayout
+    private void displayGrid(TableLayout tableLayout, char[][] grid) {
+        for (int i = 0; i < grid.length; i++) {
+            TableRow tableRow = new TableRow(requireContext());
+
+            for (int j = 0; j < grid[i].length; j++) {
+                TextView cell = new TextView(requireContext());
+                cell.setText(String.valueOf(grid[i][j]));
+                cell.setPadding(10, 10, 10, 10);
+                tableRow.addView(cell);
+            }
+
+            tableLayout.addView(tableRow);
+        }
     }
 
 }
