@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.zybooks.csci3660termproject'
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.zybooks.csci3660termproject"
         minSdk 28
