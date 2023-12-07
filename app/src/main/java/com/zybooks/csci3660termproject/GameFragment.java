@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -36,11 +37,8 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class GameFragment extends Fragment {
-    private WordAPIInterface wordAPI;
-    private int currentGridSize = 6; // Default grid value, can be changed
 
-
-    private boolean hasShownPopup = false;
+    private GameViewModel viewModel;
 
     public GameFragment() {
         // Required empty public constructor
@@ -48,27 +46,14 @@ public class GameFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Code for receiving grid size selection from SettingsFragment
-        Bundle receivedBundle = getArguments();
-        if (receivedBundle != null) {
-            Log.d("GRD-DBG", "STARTING GRID SIZE: " + currentGridSize);
-            int gridSize = receivedBundle.getInt("gridSize");
-            Log.d("GRD-DBG", "BUNDLE RECEIVED: " + gridSize);
-            currentGridSize = gridSize;
-            Log.d("GRD-DBG", "UPDATED GRID SIZE: " + currentGridSize);
-        }
-        // Use the WordAPIManager to check SharedPref for a key
+        GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
-        // If there is no key (e.g. when the user first runs the app), redirect to the settings fragment
-        Log.d("KEY-DBG", "API Key: " + userAPIKey);
         if (userAPIKey == null) {
-            Log.d("KEY-DBG", "NULL KEY DETECTED");
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(R.id.settings_Fragment);
         }
         else {
-            // wordAPI is initialized here IF a key exists in the shared preference
-            wordAPI = WordAPIClient.getClient();
+            viewModel.setWordAPI(WordAPIClient.getClient());
         }
             //handler for the pop up message
         new Handler().postDelayed(new Runnable() {
@@ -81,7 +66,7 @@ public class GameFragment extends Fragment {
     }
         //this is for the pop window for the game
     private void showPopup() {
-        if (!hasShownPopup && isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+        if (viewModel.shouldDisplayPopup() && isAdded() && getActivity() != null && !getActivity().isFinishing()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             builder.setTitle("Welcome to CosmicCross!");
             builder.setMessage("Try and find all of the words to complete the crossword! Happy solving!");
@@ -89,7 +74,7 @@ public class GameFragment extends Fragment {
 
             AlertDialog dialog = builder.create();
             dialog.show();
-            hasShownPopup = true;
+            viewModel.setDisplayPopup(false);
         }
     }
 
@@ -97,26 +82,30 @@ public class GameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
         View rootView = inflater.inflate(R.layout.fragment_game, container, false);
         TableLayout tableLayout = rootView.findViewById(R.id.tableLayout);
+        WordAPIInterface wordAPI = viewModel.getWordAPI();
+        int currentGridSize = viewModel.getCurrentGridSize();
+        char[][] wordSearchGrid = viewModel.getWordSearchGrid();
 
-        getRandomWord(
-                "^[a-zA-Z]+$",
-                6,
-                1,
-                1
-        );
-        List<String> words = new ArrayList<>();
-        words.add("JAVA");
-        words.add("PRO");
-        words.add("TEST");
-        words.add("CODE");
-
-        char[][] wordSearchGrid = generateWordSearchGrid(words);
+        if (viewModel.getWords() == null) {
+            ArrayList<String> newWords = new ArrayList<>();
+            viewModel.setWords(newWords);
+            for (int i = 0; i < 4; i++) {
+                getRandomWord(
+                        "^[a-zA-Z]+$",
+                        6,
+                        1,
+                        1
+                );
+            }
+        }
 
         // Check if currentGridSize has changed or if the grid is not initialized
-        if (wordSearchGrid == null || wordSearchGrid.length != currentGridSize || wordSearchGrid[0].length != currentGridSize) {
-            wordSearchGrid = generateWordSearchGrid(words);
+        if (wordSearchGrid == null) {
+            wordSearchGrid = generateWordSearchGrid(viewModel.getWords());
+            viewModel.setWordSearchGrid(wordSearchGrid);
         }
 
         // Find the existing TextView in your layout with the id "wordBank"
@@ -126,26 +115,19 @@ public class GameFragment extends Fragment {
         StringBuilder wordBankText = new StringBuilder();
 
         // Append each word to the StringBuilder
-        for (String word : words) {
+        assert viewModel.getWords() != null;
+        for (String word : viewModel.getWords()) {
             wordBankText.append(word).append("\n"); // Add a newline for each word
         }
 
         // Set the text of the TextView to the built text
         wordBankTextView.setText(wordBankText.toString());
-
-
-
-        if (wordAPI == null) {
-            // wordAPI is initialized here when the user navigates back from SettingsFragment
-            wordAPI = WordAPIClient.getClient();
-        }
-
         displayGrid(tableLayout, wordSearchGrid);
 
         return rootView;
     }
     public void getWordList(String letterPattern, int letters, int limit, int page) {
-        Call<WordAPISearchResponse> call = wordAPI.getWords(
+        Call<WordAPISearchResponse> call = viewModel.getWordAPI().getWords(
                 WordAPIManager.getApiKey(requireContext()),
                 letterPattern,
                 letters,
@@ -172,7 +154,7 @@ public class GameFragment extends Fragment {
     }
 
     public void getRandomWord(String letterPattern, int letters, int limit, int page) {
-        Call<WordAPIRandomResponse> call = wordAPI.getRandomWord(
+        Call<WordAPIRandomResponse> call = viewModel.getWordAPI().getRandomWord(
                 WordAPIManager.getApiKey(requireContext()),
                 letterPattern,
                 letters,
@@ -187,6 +169,7 @@ public class GameFragment extends Fragment {
                     WordAPIRandomResponse apiResponse = response.body();
                     assert apiResponse != null;
                     String randomWord = apiResponse.getWord();
+                    viewModel.addWord(randomWord);
                     Log.d("API-DBG", "Word received: " + randomWord);
                 } else {
                     // TODO: handle the error response
@@ -200,8 +183,8 @@ public class GameFragment extends Fragment {
     }
 
     private char[][] generateWordSearchGrid(List<String> words) {
-        int numRows = currentGridSize;
-        int numCols = currentGridSize;
+        int numRows = viewModel.getCurrentGridSize();
+        int numCols = viewModel.getCurrentGridSize();;
 
         char[][] grid = new char[numRows][numCols];
 
@@ -230,8 +213,8 @@ public class GameFragment extends Fragment {
         int attempts = 0;
 
         while (!placed && attempts < maxAttempts) {
-            startRow = (int) (Math.random() * currentGridSize);
-            startCol = (int) (Math.random() * currentGridSize);
+            startRow = (int) (Math.random() * viewModel.getCurrentGridSize());
+            startCol = (int) (Math.random() * viewModel.getCurrentGridSize());
 
             int direction = (int) (Math.random() * 8); // 0 to 7
 
@@ -270,7 +253,7 @@ public class GameFragment extends Fragment {
         int endRow = startRow + (length - 1) * rowIncrement;
         int endCol = startCol + (length - 1) * colIncrement;
 
-        if (endRow >= 0 && endRow < currentGridSize && endCol >= 0 && endCol < currentGridSize) {
+        if (endRow >= 0 && endRow < viewModel.getCurrentGridSize() && endCol >= 0 && endCol < viewModel.getCurrentGridSize()) {
             for (int i = 0; i < length; i++) {
                 int row = startRow + i * rowIncrement;
                 int col = startCol + i * colIncrement;

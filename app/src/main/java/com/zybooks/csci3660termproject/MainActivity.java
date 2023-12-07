@@ -1,5 +1,6 @@
 package com.zybooks.csci3660termproject;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -12,11 +13,13 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navView;
     private NavHostFragment navHostFragment;
-
+    private GameViewModel gameViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
 
         navView = findViewById(R.id.nav_view);
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
