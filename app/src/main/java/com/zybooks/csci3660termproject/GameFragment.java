@@ -41,6 +41,7 @@ import retrofit2.Response;
 public class GameFragment extends Fragment {
 
     private GameViewModel viewModel;
+    private View rootView;
 
     public GameFragment() {
         // Required empty public constructor
@@ -69,7 +70,7 @@ public class GameFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
-
+        rootView = view;
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
         if (userAPIKey == null) {
             NavController navController = NavHostFragment.findNavController(this);
@@ -85,13 +86,24 @@ public class GameFragment extends Fragment {
         if (viewModel.getWords() == null) {
             ArrayList<String> newWords = new ArrayList<>();
             viewModel.setWords(newWords);
+            WordGenerationCallback generationCallback = new WordGenerationCallback() {
+                @Override
+                public void onWordGenerated(String word) {
+                    // Word generated successfully
+                    // Add your logic here
+                    checkIfAllWordsGenerated();
+                }
+
+                @Override
+                public void onWordGenerationFailed(Throwable t) {
+                    // Word generation failed
+                    // Handle the error
+                    checkIfAllWordsGenerated();
+                }
+            };
+
             for (int i = 0; i < 4; i++) {
-                getRandomWord(
-                        "^[a-zA-Z]+$",
-                        4,
-                        1,
-                        1
-                );
+                getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
             }
         }
 
@@ -144,37 +156,10 @@ public class GameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
-        View rootView = inflater.inflate(R.layout.fragment_game, container, false);
-        return rootView;
-    }
-    public void getWordList(String letterPattern, int letters, int limit, int page) {
-        Call<WordAPISearchResponse> call = viewModel.getWordAPI().getWords(
-                WordAPIManager.getApiKey(requireContext()),
-                letterPattern,
-                letters,
-                limit,
-                page
-        );
-        call.enqueue(new Callback<WordAPISearchResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<WordAPISearchResponse> call, @NonNull Response<WordAPISearchResponse> response) {
-                if (response.isSuccessful()) {
-                    WordAPISearchResponse apiResponse = response.body();
-                    assert apiResponse != null;
-                    List<String> randomWords = apiResponse.getResults().getData();
-                    Log.d("API-DBG", "onResponse: " + randomWords.toString());
-                } else {
-                    // TODO: handle the error response
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<WordAPISearchResponse> call, @NonNull Throwable t) {
-                Log.e("API-DBG", "onFailure: ", t);
-            }
-        });
+        return inflater.inflate(R.layout.fragment_game, container, false);
     }
 
-    public void getRandomWord(String letterPattern, int letters, int limit, int page) {
+    public void getRandomWord(String letterPattern, int letters, int limit, int page, WordGenerationCallback callback) {
         Call<WordAPIRandomResponse> call = viewModel.getWordAPI().getRandomWord(
                 WordAPIManager.getApiKey(requireContext()),
                 letterPattern,
@@ -191,14 +176,15 @@ public class GameFragment extends Fragment {
                     assert apiResponse != null;
                     String randomWord = apiResponse.getWord();
                     viewModel.addWord(randomWord);
-                    Log.d("API-DBG", "Word received: " + randomWord);
+                    callback.onWordGenerated(randomWord);
                 } else {
-                    // TODO: handle the error response
+                    callback.onWordGenerationFailed(new Exception("Failed to generate word"));
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<WordAPIRandomResponse> call, @NonNull Throwable t) {
-                Log.e("API-DBG", "onFailure: ", t);
+                callback.onWordGenerationFailed(t);
             }
         });
     }
@@ -305,6 +291,27 @@ public class GameFragment extends Fragment {
             }
 
             tableLayout.addView(tableRow);
+        }
+    }
+    private void updateUIWithGeneratedWords() {
+        // Add your UI update logic here
+        // For example, update the TextView with the generated words
+        StringBuilder wordBankText = new StringBuilder();
+        for (String word : viewModel.getWords()) {
+            wordBankText.append(word).append("\n");
+        }
+        TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
+        wordBankTextView.setText("");
+        // Clear Word Bank
+        wordBankTextView.setText(wordBankText.toString());
+
+        // Generate and display the word search grid
+        viewModel.setWordSearchGrid(generateWordSearchGrid(viewModel.getWords()));
+        displayGrid(rootView.findViewById(R.id.tableLayout), viewModel.getWordSearchGrid());
+    }
+    private void checkIfAllWordsGenerated() {
+        if (viewModel.getWords() != null && viewModel.getWords().size() == 4) {
+            updateUIWithGeneratedWords();
         }
     }
 }

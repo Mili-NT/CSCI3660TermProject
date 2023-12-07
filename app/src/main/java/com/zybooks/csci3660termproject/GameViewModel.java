@@ -13,7 +13,7 @@ import java.util.List;
 public class GameViewModel extends ViewModel {
     // Define your variables here
     private WordAPIInterface wordAPI;
-    private int currentGridSize = 6;
+    private int currentGridSize = 10;
     private boolean displayPopup = true;
     private char[][] wordSearchGrid;
     // Add other variables as needed
@@ -35,9 +35,11 @@ public class GameViewModel extends ViewModel {
     public void setWords(ArrayList<String> newWords) {
         this.words = newWords;
     }
-
+    public void removeWord(String word) {
+        this.words.remove(word);
+    }
     public void addWord(String word) {
-        this.words.add(word.toUpperCase());
+        this.words.add(word.toLowerCase());
     }
     public void setWordSearchGrid(char[][] newWordSearchGrid) {
         this.wordSearchGrid = newWordSearchGrid;
