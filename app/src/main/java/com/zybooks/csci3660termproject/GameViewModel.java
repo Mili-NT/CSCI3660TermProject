@@ -1,11 +1,14 @@
 package com.zybooks.csci3660termproject;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.zybooks.csci3660termproject.api.WordAPIClient;
 import com.zybooks.csci3660termproject.retrofit.WordAPIInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameViewModel extends ViewModel {
     // Define your variables here
@@ -15,7 +18,14 @@ public class GameViewModel extends ViewModel {
     private char[][] wordSearchGrid;
     // Add other variables as needed
     private ArrayList<String> words;
+    private MutableLiveData<List<String>> wordListLiveData = new MutableLiveData<>();
+    public LiveData<List<String>> getWordListLiveData() {
+        return wordListLiveData;
+    }
 
+    public void setWordList(List<String> wordList) {
+        wordListLiveData.setValue(wordList);
+    }
     public WordAPIInterface getWordAPI() {
         return wordAPI;
     }

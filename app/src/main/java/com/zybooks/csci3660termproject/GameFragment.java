@@ -3,6 +3,7 @@ package com.zybooks.csci3660termproject;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -43,26 +44,11 @@ public class GameFragment extends Fragment {
     public GameFragment() {
         // Required empty public constructor
     }
+    // 325a606facmsh97b63eef2a7c146p114f97jsn41237e067aeb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
-        String userAPIKey = WordAPIManager.getApiKey(requireContext());
-        if (userAPIKey == null) {
-            NavController navController = NavHostFragment.findNavController(this);
-            navController.navigate(R.id.settings_Fragment);
-        }
-        else {
-            viewModel.setWordAPI(WordAPIClient.getClient());
-        }
-            //handler for the pop up message
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showPopup();
-            }
-        }, 1000);
-
     }
         //this is for the pop window for the game
     private void showPopup() {
@@ -79,6 +65,28 @@ public class GameFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+
+        String userAPIKey = WordAPIManager.getApiKey(requireContext());
+        if (userAPIKey == null) {
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(R.id.settings_Fragment);
+        } else {
+            viewModel.setWordAPI(WordAPIClient.getClient());
+        }
+
+        // handler for the pop-up message
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showPopup();
+            }
+        }, 1000);
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -89,6 +97,9 @@ public class GameFragment extends Fragment {
         int currentGridSize = viewModel.getCurrentGridSize();
         char[][] wordSearchGrid = viewModel.getWordSearchGrid();
 
+        if (viewModel.getWordAPI() == null) {
+            viewModel.setWordAPI(WordAPIClient.getClient());
+        }
         if (viewModel.getWords() == null) {
             ArrayList<String> newWords = new ArrayList<>();
             viewModel.setWords(newWords);
@@ -285,5 +296,12 @@ public class GameFragment extends Fragment {
             tableLayout.addView(tableRow);
         }
     }
-
+    private void updateWordBankTextView() {
+        TextView wordBankTextView = requireView().findViewById(R.id.word_bank);
+        StringBuilder wordBankText = new StringBuilder();
+        for (String word : viewModel.getWords()) {
+            wordBankText.append(word).append("\n");
+        }
+        wordBankTextView.setText(wordBankText.toString());
+    }
 }
