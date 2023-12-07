@@ -18,14 +18,6 @@ public class GameViewModel extends ViewModel {
     private char[][] wordSearchGrid;
     // Add other variables as needed
     private ArrayList<String> words;
-    private MutableLiveData<List<String>> wordListLiveData = new MutableLiveData<>();
-    public LiveData<List<String>> getWordListLiveData() {
-        return wordListLiveData;
-    }
-
-    public void setWordList(List<String> wordList) {
-        wordListLiveData.setValue(wordList);
-    }
     public WordAPIInterface getWordAPI() {
         return wordAPI;
     }
@@ -45,7 +37,7 @@ public class GameViewModel extends ViewModel {
     }
 
     public void addWord(String word) {
-        this.words.add(word);
+        this.words.add(word.toUpperCase());
     }
     public void setWordSearchGrid(char[][] newWordSearchGrid) {
         this.wordSearchGrid = newWordSearchGrid;
