@@ -134,12 +134,7 @@ public class GameFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // Handle FAB click event (e.g., generate new words)
-                for (String word : viewModel.getWords()) {
-                    wordBankText.append(word).append("\n"); // Add a newline for each word
-                }
-                wordBankTextView.setText(wordBankText.toString());
-                viewModel.setWordSearchGrid(generateWordSearchGrid(viewModel.getWords()));
-                displayGrid(tableLayout, viewModel.getWordSearchGrid());
+                updateUIWithGeneratedWords();
                 Log.d("GRID", "Reset char array: " + Arrays.deepToString(viewModel.getWordSearchGrid()));
             }
         });
@@ -296,13 +291,11 @@ public class GameFragment extends Fragment {
     private void updateUIWithGeneratedWords() {
         // Add your UI update logic here
         // For example, update the TextView with the generated words
+        TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
         StringBuilder wordBankText = new StringBuilder();
         for (String word : viewModel.getWords()) {
             wordBankText.append(word).append("\n");
         }
-        TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
-        wordBankTextView.setText("");
-        // Clear Word Bank
         wordBankTextView.setText(wordBankText.toString());
 
         // Generate and display the word search grid
