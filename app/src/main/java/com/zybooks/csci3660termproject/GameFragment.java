@@ -84,30 +84,9 @@ public class GameFragment extends Fragment {
             viewModel.setWordAPI(WordAPIClient.getClient());
         }
         if (viewModel.getWords() == null) {
-            ArrayList<String> newWords = new ArrayList<>();
-            viewModel.setWords(newWords);
-            WordGenerationCallback generationCallback = new WordGenerationCallback() {
-                @Override
-                public void onWordGenerated(String word) {
-                    // Word generated successfully
-                    // Add your logic here
-                    checkIfAllWordsGenerated();
-                }
-
-                @Override
-                public void onWordGenerationFailed(Throwable t) {
-                    // Word generation failed
-                    // Handle the error
-                    checkIfAllWordsGenerated();
-                }
-            };
-
-            for (int i = 0; i < 4; i++) {
-                getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
-            }
+            newWords();
         }
 
-        // Find the existing TextView in your layout with the id "wordBank"
         TextView wordBankTextView = view.findViewById(R.id.word_bank);
 
         // Create a StringBuilder to build the text for the TextView
@@ -134,8 +113,8 @@ public class GameFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // Handle FAB click event (e.g., generate new words)
+                newWords();
                 updateUIWithGeneratedWords();
-                Log.d("GRID", "Reset char array: " + Arrays.deepToString(viewModel.getWordSearchGrid()));
             }
         });
         // handler for the pop-up message
@@ -297,7 +276,7 @@ public class GameFragment extends Fragment {
             wordBankText.append(word).append("\n");
         }
         wordBankTextView.setText(wordBankText.toString());
-
+        Log.d("UI-DBG", "updateUIWithGeneratedWords: " + viewModel.getWords());
         // Generate and display the word search grid
         viewModel.setWordSearchGrid(generateWordSearchGrid(viewModel.getWords()));
         displayGrid(rootView.findViewById(R.id.tableLayout), viewModel.getWordSearchGrid());
@@ -305,6 +284,29 @@ public class GameFragment extends Fragment {
     private void checkIfAllWordsGenerated() {
         if (viewModel.getWords() != null && viewModel.getWords().size() == 4) {
             updateUIWithGeneratedWords();
+        }
+    }
+    private void newWords() {
+        ArrayList<String> newWords = new ArrayList<>();
+        viewModel.setWords(newWords);
+        WordGenerationCallback generationCallback = new WordGenerationCallback() {
+            @Override
+            public void onWordGenerated(String word) {
+                // Word generated successfully
+                // Add your logic here
+                checkIfAllWordsGenerated();
+            }
+
+            @Override
+            public void onWordGenerationFailed(Throwable t) {
+                // Word generation failed
+                // Handle the error
+                checkIfAllWordsGenerated();
+            }
+        };
+
+        for (int i = 0; i < 4; i++) {
+            getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
         }
     }
 }
