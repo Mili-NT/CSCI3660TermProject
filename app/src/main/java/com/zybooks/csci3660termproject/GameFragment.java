@@ -51,7 +51,7 @@ public class GameFragment extends Fragment {
         super.onCreate(savedInstanceState);
         GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
     }
-        //this is for the pop window for the game
+    //this is for the pop window for the game
     private void showPopup() {
         if (viewModel.shouldDisplayPopup() && isAdded() && getActivity() != null && !getActivity().isFinishing()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -258,14 +258,122 @@ public class GameFragment extends Fragment {
             TableRow tableRow = new TableRow(requireContext());
 
             for (int j = 0; j < grid[i].length; j++) {
+                final int row = i;
+                final int col = j;
                 TextView cell = new TextView(requireContext());
                 cell.setText(String.valueOf(grid[i][j]));
                 cell.setPadding(10, 10, 10, 10);
+                cell.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view){
+                        onCellClicked(row,col);
+                    }
+                });
                 tableRow.addView(cell);
             }
-
             tableLayout.addView(tableRow);
         }
+    }
+
+    private void onCellClicked(int row, int col) {
+        char selectedChar = viewModel.getWordSearchGrid()[row][col];
+        Log.d("CELL-CLICKED", "Selected char: " + selectedChar);
+
+        // Implement logic to check if the selected cell is part of any word
+        String selectedWord = checkForWord(row, col);
+
+        if (selectedWord != null) {
+            // Handle word selection (e.g., highlight the word, show a message)
+            Log.d("WORD-SELECTED", "Selected word: " + selectedWord);
+        }
+    }
+
+    // Method to check if the selected cell is part of any word
+    private String checkForWord(int row, int col) {
+        char[][] grid = viewModel.getWordSearchGrid();
+        StringBuilder selectedWord = new StringBuilder();
+
+        for (int i = col; i < grid[row].length && grid[row][i] != '\0'; i++) {
+            selectedWord.append(grid[row][i]);
+            Log.d("CELL-CLICKED", "checkForWord: " + selectedWord);
+            if (viewModel.getWords().contains(selectedWord.toString())) {
+                return selectedWord.toString();
+            }
+        }
+
+        selectedWord.setLength(0);
+
+        for (int i = row; i < grid.length && grid[i][col] != '\0'; i++) {
+            selectedWord.append(grid[i][col]);
+            Log.d("CELL-CLICKED", "checkForWord: " + selectedWord);
+            if (viewModel.getWords().contains(selectedWord.toString())) {
+                return selectedWord.toString();
+            }
+        }
+        // Reset StringBuilder for checking diagonally (top-left to bottom-right)
+        selectedWord.setLength(0);
+
+        for (int i = 0; row + i < grid.length && col + i < grid[row].length && grid[row + i][col + i] != '\0'; i++) {
+            selectedWord.append(grid[row + i][col + i]);
+            Log.d("CELL-CLICKED", "checkForWord (TL->BR): " + selectedWord);
+            if (viewModel.getWords().contains(selectedWord.toString())) {
+                return selectedWord.toString();
+            }
+        }
+
+        // Reset StringBuilder for checking diagonally (top-right to bottom-left)
+        selectedWord.setLength(0);
+
+        for (int i = 0; row - i >= 0 && col - i >= 0 && grid[row - i][col - i] != '\0'; i++) {
+            selectedWord.append(grid[row - i][col - i]);
+            Log.d("CELL-CLICKED", "checkForWord (BR->TL): " + selectedWord);
+            if (viewModel.getWords().contains(selectedWord.toString())) {
+                return selectedWord.toString();
+            }
+        }
+        // Reset StringBuilder for checking diagonally (bottom-left to top-right)
+        selectedWord.setLength(0);
+
+        for (int i = 0; row + i < grid.length && col - i >= 0 && grid[row + i][col - i] != '\0'; i++) {
+            selectedWord.append(grid[row + i][col - i]);
+            Log.d("CELL-CLICKED", "checkForWord (BL->TR): " + selectedWord);
+            if (viewModel.getWords().contains(selectedWord.toString())) {
+                return selectedWord.toString();
+            }
+        }
+
+        // Reset StringBuilder for checking diagonally (bottom-left to top-right)
+        selectedWord.setLength(0);
+
+        for (int i = 0; row - i >= 0 && col + i < grid[row].length && grid[row - i][col + i] != '\0'; i++) {
+            selectedWord.append(grid[row - i][col + i]);
+            Log.d("CELL-CLICKED", "checkForWord (BL->TR): " + selectedWord);
+            if (viewModel.getWords().contains(selectedWord.toString())) {
+                return selectedWord.toString();
+            }
+        }
+        // Reset StringBuilder for checking horizontally (right to left)
+        selectedWord.setLength(0);
+
+        for (int i = 0; col - i >= 0 && grid[row][col - i] != '\0'; i++) {
+            selectedWord.append(grid[row][col - i]);
+            Log.d("CELL-CLICKED", "checkForWord (R->L): " + selectedWord);
+            if (viewModel.getWords().contains(selectedWord.toString())) {
+                return selectedWord.toString();
+            }
+        }
+        // Reset StringBuilder for checking vertically (bottom to top)
+        selectedWord.setLength(0);
+
+        for (int i = 0; row - i >= 0 && grid[row - i][col] != '\0'; i++) {
+            selectedWord.append(grid[row - i][col]);
+            Log.d("CELL-CLICKED", "checkForWord (B->T): " + selectedWord);
+            if (viewModel.getWords().contains(selectedWord.toString())) {
+                return selectedWord.toString();
+            }
+        }
+
+        return null;
     }
     private void updateUIWithGeneratedWords() {
         // Add your UI update logic here
