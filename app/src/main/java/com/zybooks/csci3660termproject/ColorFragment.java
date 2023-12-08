@@ -1,12 +1,19 @@
 package com.zybooks.csci3660termproject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -26,11 +33,37 @@ public class ColorFragment extends Fragment {
 
     // this is the default color of the preview box
     private int mDefaultColor;
+    private CheckBox rainbowColor;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+    //inflates color fragment
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-       View view = inflater.inflate(R.layout.fragment_color,container, false);
+        View view = inflater.inflate(R.layout.fragment_color,container, false);
+        return view;
+    }
 
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //Default rainbow highlighter
+        CheckBox rainbowColor = view.findViewById(R.id.color_checkbox);
+        rainbowColor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    //Checkbox checked; rainbow highlighter
+                    cycleHighlightColors();
+                }
+                else {
+                    //Checkbox is unchecked
+                    stopCycleHighlightColors();
+                }
+            }
+        });
         // register the GFG text with appropriate ID
         gfgTextView = view.findViewById(R.id.gfg_heading);
 
@@ -48,28 +81,34 @@ public class ColorFragment extends Fragment {
 
         // button open the AmbilWanra color picker dialog.
         mPickColorButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // to make code look cleaner the color
-                        // picker dialog functionality are
-                        // handled in openColorPickerDialogue()
-                        // function
-                        openColorPickerDialogue();
-                    }
-                });
+            @Override
+            public void onClick(View v) {
+                // to make code look cleaner the color
+                // picker dialog functionality are
+                // handled in openColorPickerDialogue()
+                // function
+                openColorPickerDialogue();
+            }
+        });
 
         // button to set the color GFG text
         mSetColorButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // as the mDefaultColor is the global
-                        // variable its value will be changed as
-                        // soon as ok button is clicked from the
-                        // color picker dialog.
-                        gfgTextView.setTextColor(mDefaultColor);
-                    }
-                });
-        return view;
+            @Override
+            public void onClick(View v) {
+                // as the mDefaultColor is the global
+                // variable its value will be changed as
+                // soon as ok button is clicked from the
+                // color picker dialog.
+                gfgTextView.setTextColor(mDefaultColor);
+            }
+        });
+    }
+
+    private void cycleHighlightColors() {
+        //TO DO: cycle through rainbow colors as viewer
+    }
+    private void stopCycleHighlightColors() {
+
     }
 
     // the dialog functionality is handled separately
@@ -110,4 +149,5 @@ public class ColorFragment extends Fragment {
     }
 
     //Default rainbow highlight
+
 }

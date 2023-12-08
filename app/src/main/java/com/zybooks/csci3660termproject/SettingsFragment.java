@@ -1,5 +1,7 @@
 package com.zybooks.csci3660termproject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -60,28 +62,6 @@ public class SettingsFragment extends Fragment {
                 saveApiKey();
             }
         });
-        // GRID SIZE & CHIP LISTENERS
-        ChipGroup chipGroup = rootView.findViewById(R.id.chip_group);
-
-        chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(ChipGroup group, int checkedId) {
-                int gridSize;
-                Log.d("GRD-DBG", "onCheckedChanged called.");
-                if (checkedId == R.id.chip_size6) {
-                    gridSize = 6;
-                } else if (checkedId == R.id.chip_size10) {
-                    gridSize = 10;
-                } else if (checkedId == R.id.chip_size12) {
-                    gridSize = 12;
-                } else {
-                    gridSize = 6;
-                }
-                Log.d("GRD-DBG", "onCheckedChanged, new gridSize: " + gridSize);
-                updateGameFragment(gridSize);
-            }
-        });
-
         return rootView;
     }
     private void updateGameFragment(int gridSize) {

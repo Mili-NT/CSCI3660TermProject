@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ColorFragment"
-    tools:ignore="HardcodedText"
-    android:background="@drawable/starry_sky_1">
+    tools:ignore="HardcodedText">
 
 
     <!--GeeksforGeeks Text-->
@@ -77,6 +76,7 @@
         android:fontFamily="@font/honeypirls"
         android:textSize="30sp"/>
 
+    <!--Sets highlighter to rainbow-->
     <CheckBox
         android:id="@+id/color_checkbox"
         android:layout_width="250dp"
