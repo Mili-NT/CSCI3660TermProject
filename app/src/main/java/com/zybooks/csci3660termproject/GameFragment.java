@@ -23,14 +23,13 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.zybooks.csci3660termproject.api.WordAPIClient;
 import com.zybooks.csci3660termproject.api.WordAPIManager;
 import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
-import com.zybooks.csci3660termproject.responses.WordAPISearchResponse;
-import com.zybooks.csci3660termproject.retrofit.WordAPIInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,21 +104,20 @@ public class GameFragment extends Fragment {
 
         // Set the text of the TextView to the built text
         wordBankTextView.setText(wordBankText.toString());
-        // Check if currentGridSize has changed or if the grid is not initialized
         if (viewModel.getWordSearchGrid() == null) {
             ArrayList<String> currentWords = viewModel.getWords();
             viewModel.setWordSearchGrid(generateWordSearchGrid(currentWords));
         }
 
+        congratualtionsToast= Toast.makeText(requireContext(), "Congratulations! Press the refresh button for a new game.", Toast.LENGTH_LONG);
         displayGrid(tableLayout, viewModel.getWordSearchGrid());
         Log.d("GRID", "First char array: " + Arrays.deepToString(viewModel.getWordSearchGrid()));
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Handle FAB click event (e.g., generate new words)
                 newWords();
-                updateUIWithGeneratedWords();
+                updateBankAndGrid();
             }
         });
         // handler for the pop-up message
@@ -172,7 +170,7 @@ public class GameFragment extends Fragment {
             }
         });
     }
-
+    private Toast congratualtionsToast;
     private char[][] generateWordSearchGrid(List<String> words) {
         int numRows = viewModel.getCurrentGridSize();
         int numCols = viewModel.getCurrentGridSize();;
@@ -288,13 +286,18 @@ public class GameFragment extends Fragment {
     private void onCellClicked(int row, int col) {
         char selectedChar = viewModel.getWordSearchGrid()[row][col];
         Log.d("CELL-CLICKED", "Selected char: " + selectedChar);
-
-        // Implement logic to check if the selected cell is part of any word
         String selectedWord = checkForWord(row, col);
 
         if (selectedWord != null) {
-            // Handle word selection (e.g., highlight the word, show a message)
             Log.d("WORD-SELECTED", "Selected word: " + selectedWord);
+            viewModel.removeWord(selectedWord);
+            updateWordBankOnly();
+            checkIfAllWordsGenerated();
+
+            List<String> remainingWords = viewModel.getWords();
+            if (remainingWords != null && remainingWords.isEmpty()) {
+                congratualtionsToast.show();
+            }
         }
     }
 
@@ -305,7 +308,6 @@ public class GameFragment extends Fragment {
 
         for (int i = col; i < grid[row].length && grid[row][i] != '\0'; i++) {
             selectedWord.append(grid[row][i]);
-            Log.d("CELL-CLICKED", "checkForWord: " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
 
                 return selectedWord.toString();
@@ -316,7 +318,6 @@ public class GameFragment extends Fragment {
 
         for (int i = row; i < grid.length && grid[i][col] != '\0'; i++) {
             selectedWord.append(grid[i][col]);
-            Log.d("CELL-CLICKED", "checkForWord: " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
                 return selectedWord.toString();
             }
@@ -326,7 +327,6 @@ public class GameFragment extends Fragment {
 
         for (int i = 0; row + i < grid.length && col + i < grid[row].length && grid[row + i][col + i] != '\0'; i++) {
             selectedWord.append(grid[row + i][col + i]);
-            Log.d("CELL-CLICKED", "checkForWord (TL->BR): " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
                 return selectedWord.toString();
             }
@@ -337,7 +337,6 @@ public class GameFragment extends Fragment {
 
         for (int i = 0; row - i >= 0 && col - i >= 0 && grid[row - i][col - i] != '\0'; i++) {
             selectedWord.append(grid[row - i][col - i]);
-            Log.d("CELL-CLICKED", "checkForWord (BR->TL): " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
                 return selectedWord.toString();
             }
@@ -347,7 +346,6 @@ public class GameFragment extends Fragment {
 
         for (int i = 0; row + i < grid.length && col - i >= 0 && grid[row + i][col - i] != '\0'; i++) {
             selectedWord.append(grid[row + i][col - i]);
-            Log.d("CELL-CLICKED", "checkForWord (BL->TR): " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
                 return selectedWord.toString();
             }
@@ -358,7 +356,6 @@ public class GameFragment extends Fragment {
 
         for (int i = 0; row - i >= 0 && col + i < grid[row].length && grid[row - i][col + i] != '\0'; i++) {
             selectedWord.append(grid[row - i][col + i]);
-            Log.d("CELL-CLICKED", "checkForWord (BL->TR): " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
                 return selectedWord.toString();
             }
@@ -368,7 +365,6 @@ public class GameFragment extends Fragment {
 
         for (int i = 0; col - i >= 0 && grid[row][col - i] != '\0'; i++) {
             selectedWord.append(grid[row][col - i]);
-            Log.d("CELL-CLICKED", "checkForWord (R->L): " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
                 return selectedWord.toString();
             }
@@ -378,7 +374,6 @@ public class GameFragment extends Fragment {
 
         for (int i = 0; row - i >= 0 && grid[row - i][col] != '\0'; i++) {
             selectedWord.append(grid[row - i][col]);
-            Log.d("CELL-CLICKED", "checkForWord (B->T): " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
                 return selectedWord.toString();
             }
@@ -386,23 +381,30 @@ public class GameFragment extends Fragment {
 
         return null;
     }
-    private void updateUIWithGeneratedWords() {
-        // Add your UI update logic here
-        // For example, update the TextView with the generated words
+    private void updateBankAndGrid() {
         TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
         StringBuilder wordBankText = new StringBuilder();
         for (String word : viewModel.getWords()) {
             wordBankText.append(word).append("\n");
         }
         wordBankTextView.setText(wordBankText.toString());
-        Log.d("UI-DBG", "updateUIWithGeneratedWords: " + viewModel.getWords());
         // Generate and display the word search grid
         viewModel.setWordSearchGrid(generateWordSearchGrid(viewModel.getWords()));
         displayGrid(rootView.findViewById(R.id.tableLayout), viewModel.getWordSearchGrid());
     }
+    private void updateWordBankOnly() {
+        TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
+        StringBuilder wordBankText = new StringBuilder();
+        for (String word : viewModel.getWords()) {
+            wordBankText.append(word).append("\n");
+        }
+        wordBankTextView.setText(wordBankText.toString());
+    }
+
     private void checkIfAllWordsGenerated() {
         if (viewModel.getWords() != null && viewModel.getWords().size() == 4) {
-            updateUIWithGeneratedWords();
+            updateBankAndGrid();
+
         }
     }
     private void newWords() {
