@@ -20,7 +20,8 @@ import androidx.fragment.app.Fragment;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class ColorFragment extends Fragment {
-
+    private static final String COLOR_PREF = "colorPref";
+    private static final String COLOR_KEY = "colorKey";
     // text view variable to set the color for GFG text
     private TextView gfgTextView;
 
@@ -62,8 +63,10 @@ public class ColorFragment extends Fragment {
         mColorPreview = view.findViewById(R.id.preview_selected_color);
 
         // set the default color to 0 as it is black
-        mDefaultColor = 0;
-
+        SharedPreferences prefs = requireActivity().getSharedPreferences(COLOR_PREF, Context.MODE_PRIVATE);
+        mDefaultColor = prefs.getInt(COLOR_KEY, Color.BLACK);
+        mColorPreview.setBackgroundColor(mDefaultColor);
+        gfgTextView.setTextColor(mDefaultColor);
         // button open the AmbilWanra color picker dialog.
         mPickColorButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +120,7 @@ public class ColorFragment extends Fragment {
                         // button is clicked from the
                         // color picker dialog
                         mDefaultColor = color;
-
+                        saveColorToSharedPreferences(mDefaultColor);
                         // now change the picked color
                         // preview box to mDefaultColor
                         mColorPreview.setBackgroundColor(mDefaultColor);
@@ -125,5 +128,10 @@ public class ColorFragment extends Fragment {
                     }
                 });
         colorPickerDialogue.show();
+    }
+    private void saveColorToSharedPreferences(int color) {
+        SharedPreferences.Editor editor = requireActivity().getSharedPreferences(COLOR_PREF, Context.MODE_PRIVATE).edit();
+        editor.putInt(COLOR_KEY, color);
+        editor.apply();
     }
 }
