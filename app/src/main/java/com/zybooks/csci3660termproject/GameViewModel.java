@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameViewModel extends ViewModel {
-    // Define your variables here
+    // Game variables
     private WordAPIInterface wordAPI;
     private int currentGridSize = 10;
     private boolean displayPopup = true;
+    // Word grid and bank
     private char[][] wordSearchGrid;
-    // Add other variables as needed
     private ArrayList<String> words;
+    // Getters and Setters
     public WordAPIInterface getWordAPI() {
         return wordAPI;
     }
@@ -48,9 +49,6 @@ public class GameViewModel extends ViewModel {
         this.displayPopup = displayPopup;
     }
 
-    public void setCurrentGridSize(int gridSize) {
-        this.currentGridSize = gridSize;
-    }
     public void setWordAPI(WordAPIInterface wordAPIInterface) {
         this.wordAPI = wordAPIInterface;
     }

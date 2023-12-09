@@ -16,5 +16,6 @@
     <string name="save_api_key">Save API Key</string>
     <string name="default_color">Default</string>
     <string name="refresh">refresh</string>
+    <string name="refresh_string">refresh</string>
 
 </resources>

@@ -2,8 +2,6 @@ package com.zybooks.csci3660termproject;
 
 import static com.google.android.material.color.MaterialColors.getColor;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -16,8 +14,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Handler;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +30,6 @@ import com.zybooks.csci3660termproject.api.WordAPIManager;
 import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -52,6 +47,7 @@ public class GameFragment extends Fragment {
     private View rootView;
     private int selectedRow = -1;
     private int selectedCol = -1;
+    private Toast congratulationsToast;
 
     public GameFragment() {
         // Required empty public constructor
@@ -61,7 +57,7 @@ public class GameFragment extends Fragment {
         super.onCreate(savedInstanceState);
         GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
     }
-    //this is for the pop window for the game
+    // This is for the pop window for the game
     private void showPopup() {
         if (viewModel.shouldDisplayPopup() && isAdded() && getActivity() != null && !getActivity().isFinishing()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -71,6 +67,7 @@ public class GameFragment extends Fragment {
 
             AlertDialog dialog = builder.create();
             dialog.show();
+            // Popup should only ever display once
             viewModel.setDisplayPopup(false);
         }
     }
@@ -78,10 +75,13 @@ public class GameFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // Initiate both viewmodels to provide permanence to changes made in Game and Color Fragments
         colorViewModel = new ViewModelProvider(requireActivity()).get(ColorViewModel.class);
         GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
         rootView = view;
-
+        TableLayout tableLayout = view.findViewById(R.id.tableLayout);
+        TextView wordBankTextView = view.findViewById(R.id.word_bank);
+        // If user does not have an API key, this forces them to go to the settings fragment
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
         if (userAPIKey == null) {
             NavController navController = NavHostFragment.findNavController(this);
@@ -89,16 +89,14 @@ public class GameFragment extends Fragment {
         } else {
             viewModel.setWordAPI(WordAPIClient.getClient());
         }
-        TableLayout tableLayout = view.findViewById(R.id.tableLayout);
-
+        // Initializes the api client and saves to viewmodel
         if (viewModel.getWordAPI() == null) {
             viewModel.setWordAPI(WordAPIClient.getClient());
         }
+        // Checks if the word list is null and initializes it
         if (viewModel.getWords() == null) {
             newWords();
         }
-
-        TextView wordBankTextView = view.findViewById(R.id.word_bank);
 
         // Create a StringBuilder to build the text for the TextView
         StringBuilder wordBankText = new StringBuilder();
@@ -115,10 +113,11 @@ public class GameFragment extends Fragment {
             ArrayList<String> currentWords = viewModel.getWords();
             viewModel.setWordSearchGrid(generateWordSearchGrid(currentWords));
         }
-
+        // Congrats toast for game end
         congratulationsToast = Toast.makeText(requireContext(), "Congratulations! Press the refresh button for a new game.", Toast.LENGTH_LONG);
+        // Creates the grid from data in viewmodel
         displayGrid(tableLayout, viewModel.getWordSearchGrid());
-        Log.d("GRID", "First char array: " + Arrays.deepToString(viewModel.getWordSearchGrid()));
+        // New game / Refresh FAB
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +126,7 @@ public class GameFragment extends Fragment {
                 updateBankAndGrid();
             }
         });
+        // Uses the shared viewmodel to check for color changes
         colorViewModel.getSelectedColor().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer color) {
@@ -151,6 +151,7 @@ public class GameFragment extends Fragment {
     }
 
     public void getRandomWord(String letterPattern, int letters, int limit, int page, WordGenerationCallback callback) {
+        // Uses the retrofit API to initiate an API call
         Call<WordAPIRandomResponse> call = viewModel.getWordAPI().getRandomWord(
                 WordAPIManager.getApiKey(requireContext()),
                 letterPattern,
@@ -159,6 +160,8 @@ public class GameFragment extends Fragment {
                 page,
                 true
         );
+        // Uses enqueue to make the request asynchronous
+        // Requires the custom callback to make the app wait for the request to finish
         call.enqueue(new Callback<WordAPIRandomResponse>() {
             @Override
             public void onResponse(@NonNull Call<WordAPIRandomResponse> call, @NonNull Response<WordAPIRandomResponse> response) {
@@ -166,6 +169,7 @@ public class GameFragment extends Fragment {
                     WordAPIRandomResponse apiResponse = response.body();
                     assert apiResponse != null;
                     String randomWord = apiResponse.getWord();
+                    // Uses the viewmodel to store the word
                     viewModel.addWord(randomWord);
                     callback.onWordGenerated(randomWord);
                 } else {
@@ -179,7 +183,6 @@ public class GameFragment extends Fragment {
             }
         });
     }
-    private Toast congratulationsToast;
     private char[][] generateWordSearchGrid(List<String> words) {
         int numRows = viewModel.getCurrentGridSize();
         int numCols = viewModel.getCurrentGridSize();;
@@ -208,6 +211,8 @@ public class GameFragment extends Fragment {
         int length = word.length();
         int startRow, startCol;
         boolean placed = false;
+        // App actually generates multiple grids to ensure each word "fits"
+        // maxAttempts is kept at 100 (reasonable value for four 6 letter words on a 10x10)
         int attempts = 0;
 
         while (!placed && attempts < maxAttempts) {
@@ -270,11 +275,15 @@ public class GameFragment extends Fragment {
 
     // Method to display the word search grid in the TableLayout
     private void displayGrid(TableLayout tableLayout, char[][] grid) {
+        // Clears the original grid
+        // Without this, new grids stack on top of the old one
         tableLayout.removeAllViews();
+        // Iterate through grid length (10x10)
         for (int i = 0; i < grid.length; i++) {
             TableRow tableRow = new TableRow(requireContext());
 
             for (int j = 0; j < grid[i].length; j++) {
+                // Creates the cells and adds their listeners for selection
                 final int row = i;
                 final int col = j;
                 TextView cell = new TextView(requireContext());
@@ -294,19 +303,20 @@ public class GameFragment extends Fragment {
     }
 
     private void onCellClicked(int row, int col) {
-        char selectedChar = viewModel.getWordSearchGrid()[row][col];
-        Log.d("CELL-CLICKED", "Selected char: " + selectedChar);
+        // Check if word selected is valid
+        // If not, checkForWord returns null
         String selectedWord = checkForWord(row, col);
 
         Integer selectedColor = colorViewModel.getSelectedColor().getValue();
         TableLayout tableLayout = rootView.findViewById(R.id.tableLayout);
 
         if (selectedWord != null) {
-            Log.d("WORD-SELECTED", "Selected word: " + selectedWord);
+            // If the word is in the bank remove it
             viewModel.removeWord(selectedWord);
-            updateWordBankOnly();
+            // Call updateWordBank to regenerate the word bank + text view
+            updateWordBank();
             checkIfAllWordsGenerated();
-
+            // Game end logic
             List<String> remainingWords = viewModel.getWords();
             if (remainingWords != null && remainingWords.isEmpty()) {
                 congratulationsToast.show();
@@ -338,7 +348,7 @@ public class GameFragment extends Fragment {
     private String checkForWord(int row, int col) {
         char[][] grid = viewModel.getWordSearchGrid();
         StringBuilder selectedWord = new StringBuilder();
-
+        // First StringBuilder for checking horizontally (Left to Right)
         for (int i = col; i < grid[row].length && grid[row][i] != '\0'; i++) {
             selectedWord.append(grid[row][i]);
             if (viewModel.getWords().contains(selectedWord.toString())) {
@@ -415,17 +425,14 @@ public class GameFragment extends Fragment {
         return null;
     }
     private void updateBankAndGrid() {
-        TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
-        StringBuilder wordBankText = new StringBuilder();
-        for (String word : viewModel.getWords()) {
-            wordBankText.append(word).append("\n");
-        }
-        wordBankTextView.setText(wordBankText.toString());
-        // Generate and display the word search grid
+        // Updates both the bank and grid for a new game
+        // Never any need to update the grid without the bank
+        updateWordBank();
         viewModel.setWordSearchGrid(generateWordSearchGrid(viewModel.getWords()));
         displayGrid(rootView.findViewById(R.id.tableLayout), viewModel.getWordSearchGrid());
     }
-    private void updateWordBankOnly() {
+    private void updateWordBank() {
+        // This function updates the word bank by building a new string builder
         TextView wordBankTextView = rootView.findViewById(R.id.word_bank);
         StringBuilder wordBankText = new StringBuilder();
         for (String word : viewModel.getWords()) {
@@ -443,22 +450,19 @@ public class GameFragment extends Fragment {
     private void newWords() {
         ArrayList<String> newWords = new ArrayList<>();
         viewModel.setWords(newWords);
+        // Callback function to ensure that we have the words prior to generating the bank
         WordGenerationCallback generationCallback = new WordGenerationCallback() {
             @Override
             public void onWordGenerated(String word) {
-                // Word generated successfully
-                // Add your logic here
                 checkIfAllWordsGenerated();
             }
 
             @Override
             public void onWordGenerationFailed(Throwable t) {
-                // Word generation failed
-                // Handle the error
                 checkIfAllWordsGenerated();
             }
         };
-
+        // Actually get the words by calling getRandomWord and passing the callback function
         for (int i = 0; i < 4; i++) {
             getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
         }

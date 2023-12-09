@@ -1,25 +1,15 @@
 package com.zybooks.csci3660termproject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
-
-import com.google.android.material.chip.ChipGroup;
 import com.zybooks.csci3660termproject.api.WordAPIManager;
-
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,7 +43,6 @@ public class SettingsFragment extends Fragment {
         EditText editTextApiKey = rootView.findViewById(R.id.editTextApiKey);
         String userAPIKey = WordAPIManager.getApiKey(requireContext()); // requireContext() is required in fragments
         if (userAPIKey != null) {
-            Log.d("BTN-DBG", "setHint called");
             editTextApiKey.setHint(userAPIKey); // Updates text hint to display key -- not necessary but looks good
         }
         saveApiKeyButton.setOnClickListener(new View.OnClickListener() {
@@ -63,22 +52,6 @@ public class SettingsFragment extends Fragment {
             }
         });
         return rootView;
-    }
-    private void updateGameFragment(int gridSize) {
-        // Create a bundle and send it to GameFragment
-        Bundle bundle = new Bundle();
-        bundle.putInt("gridSize", gridSize);
-
-        GameFragment gameFragment = new GameFragment();
-        gameFragment.setArguments(bundle);
-
-        Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        if (!(currentFragment instanceof SettingsFragment)) {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.nav_host_fragment, gameFragment)
-                    .addToBackStack(null)
-                    .commit();
-        }
     }
     private void saveApiKey() {
         // TODO: Add validity checking?

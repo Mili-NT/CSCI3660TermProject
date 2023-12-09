@@ -56,6 +56,6 @@
         android:src="@drawable/reset_vector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="refresh" />
+        android:contentDescription="@string/refresh_string" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
