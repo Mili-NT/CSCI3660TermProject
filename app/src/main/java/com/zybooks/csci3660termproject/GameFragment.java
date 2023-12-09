@@ -18,6 +18,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -103,6 +104,7 @@ public class GameFragment extends Fragment {
             viewModel.setWordSearchGrid(generateWordSearchGrid(currentWords));
         }
 
+        congratualtionsToast= Toast.makeText(requireContext(), "Congratulations! Press the refresh button for a new game.", Toast.LENGTH_LONG);
         displayGrid(tableLayout, viewModel.getWordSearchGrid());
         Log.d("GRID", "First char array: " + Arrays.deepToString(viewModel.getWordSearchGrid()));
         FloatingActionButton fab = view.findViewById(R.id.fab);
@@ -158,7 +160,7 @@ public class GameFragment extends Fragment {
             }
         });
     }
-
+    private Toast congratualtionsToast;
     private char[][] generateWordSearchGrid(List<String> words) {
         int numRows = viewModel.getCurrentGridSize();
         int numCols = viewModel.getCurrentGridSize();;
@@ -280,6 +282,12 @@ public class GameFragment extends Fragment {
             Log.d("WORD-SELECTED", "Selected word: " + selectedWord);
             viewModel.removeWord(selectedWord);
             updateWordBankOnly();
+            checkIfAllWordsGenerated();
+
+            List<String> remainingWords = viewModel.getWords();
+            if (remainingWords != null && remainingWords.isEmpty()) {
+                congratualtionsToast.show();
+            }
         }
     }
 
@@ -381,9 +389,11 @@ public class GameFragment extends Fragment {
         }
         wordBankTextView.setText(wordBankText.toString());
     }
+
     private void checkIfAllWordsGenerated() {
         if (viewModel.getWords() != null && viewModel.getWords().size() == 4) {
             updateBankAndGrid();
+
         }
     }
     private void newWords() {

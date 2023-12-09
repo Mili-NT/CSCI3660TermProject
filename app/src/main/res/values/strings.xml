@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">csci3660termproject</string>
+    <string name="app_name">CosmicCross</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="reset">reset</string>
