@@ -1,5 +1,6 @@
 package com.zybooks.csci3660termproject;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,12 +22,13 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navView;
     private NavHostFragment navHostFragment;
+    private ColorViewModel colorViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        colorViewModel = new ViewModelProvider(this).get(ColorViewModel.class);
         //nav bar
         navView = findViewById(R.id.nav_view);
         navHostFragment = (NavHostFragment) getSupportFragmentManager()

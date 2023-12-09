@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -34,6 +35,7 @@ public class ColorFragment extends Fragment {
 
     // this is the default color of the preview box
     private int mDefaultColor;
+    private ColorViewModel colorViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,7 @@ public class ColorFragment extends Fragment {
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        colorViewModel = new ViewModelProvider(requireActivity()).get(ColorViewModel.class);
         // register the GFG text with appropriate ID
         gfgTextView = view.findViewById(R.id.gfg_heading);
 
@@ -120,6 +122,7 @@ public class ColorFragment extends Fragment {
                         // button is clicked from the
                         // color picker dialog
                         mDefaultColor = color;
+                        colorViewModel.setSelectedColor(mDefaultColor);
                         saveColorToSharedPreferences(mDefaultColor);
                         // now change the picked color
                         // preview box to mDefaultColor

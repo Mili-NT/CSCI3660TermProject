@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -45,6 +46,8 @@ import retrofit2.Response;
 public class GameFragment extends Fragment {
 
     private GameViewModel viewModel;
+    private ColorViewModel colorViewModel;
+
     private View rootView;
 
     public GameFragment() {
@@ -72,9 +75,10 @@ public class GameFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        colorViewModel = new ViewModelProvider(requireActivity()).get(ColorViewModel.class);
         GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
         rootView = view;
+
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
         if (userAPIKey == null) {
             NavController navController = NavHostFragment.findNavController(this);
@@ -118,6 +122,13 @@ public class GameFragment extends Fragment {
             public void onClick(View view) {
                 newWords();
                 updateBankAndGrid();
+            }
+        });
+        colorViewModel.getSelectedColor().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer color) {
+                // TODO: TEST, IMPLEMENT HIGHLIGHTER HERE
+                wordBankTextView.setTextColor(color);
             }
         });
         // handler for the pop-up message
