@@ -1,5 +1,10 @@
 package com.zybooks.csci3660termproject;
 
+import static com.google.android.material.color.MaterialColors.getColor;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -130,6 +135,11 @@ public class GameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+
+        //Color user picked to highlight in color fragment
+        SharedPreferences sharedPref = this.requireActivity().getPreferences(Context.MODE_PRIVATE);
+        int selectedColor = sharedPref.getInt("color", R.color.yellow);
+
         return inflater.inflate(R.layout.fragment_game, container, false);
     }
 
@@ -262,7 +272,7 @@ public class GameFragment extends Fragment {
                 final int col = j;
                 TextView cell = new TextView(requireContext());
                 cell.setText(String.valueOf(grid[i][j]));
-                cell.setPadding(10, 10, 10, 10);
+                cell.setPadding(40, 20, 30, 40);
                 cell.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
@@ -297,6 +307,7 @@ public class GameFragment extends Fragment {
             selectedWord.append(grid[row][i]);
             Log.d("CELL-CLICKED", "checkForWord: " + selectedWord);
             if (viewModel.getWords().contains(selectedWord.toString())) {
+
                 return selectedWord.toString();
             }
         }
@@ -417,4 +428,7 @@ public class GameFragment extends Fragment {
             getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
         }
     }
+
+
+
 }

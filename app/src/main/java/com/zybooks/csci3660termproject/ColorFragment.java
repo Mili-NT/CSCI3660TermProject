@@ -33,7 +33,6 @@ public class ColorFragment extends Fragment {
 
     // this is the default color of the preview box
     private int mDefaultColor;
-    private CheckBox rainbowColor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,27 +42,13 @@ public class ColorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_color,container, false);
+
         return view;
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Default rainbow highlighter
-        CheckBox rainbowColor = view.findViewById(R.id.color_checkbox);
-        rainbowColor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    //Checkbox checked; rainbow highlighter
-                    cycleHighlightColors();
-                }
-                else {
-                    //Checkbox is unchecked
-                    stopCycleHighlightColors();
-                }
-            }
-        });
         // register the GFG text with appropriate ID
         gfgTextView = view.findViewById(R.id.gfg_heading);
 
@@ -104,13 +89,6 @@ public class ColorFragment extends Fragment {
         });
     }
 
-    private void cycleHighlightColors() {
-        //TO DO: cycle through rainbow colors as viewer
-    }
-    private void stopCycleHighlightColors() {
-
-    }
-
     // the dialog functionality is handled separately
     // using openColorPickerDialog this is triggered as
     // soon as the user clicks on the Pick Color button And
@@ -143,11 +121,9 @@ public class ColorFragment extends Fragment {
                         // now change the picked color
                         // preview box to mDefaultColor
                         mColorPreview.setBackgroundColor(mDefaultColor);
+
                     }
                 });
         colorPickerDialogue.show();
     }
-
-    //Default rainbow highlight
-
 }

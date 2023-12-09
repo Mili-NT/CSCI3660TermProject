@@ -25,6 +25,7 @@
     <!--Pick color Button-->
     <Button
         android:id="@+id/pick_color_button"
+        android:layout_marginVertical="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -41,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="15dp"
         android:textSize="30sp"
         android:text="@string/color_fragment_name"
         android:background="@color/black"
@@ -58,7 +59,7 @@
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:background="@android:color/darker_gray"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="30dp" />
 
     <!--set color button to overwrite the
         color for GeeksforGeeks text-->
@@ -67,7 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="40dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:textColor="@color/black"
@@ -75,19 +76,5 @@
         android:text="@string/color_fragment_set"
         android:fontFamily="@font/honeypirls"
         android:textSize="30sp"/>
-
-    <!--Sets highlighter to rainbow-->
-    <CheckBox
-        android:id="@+id/color_checkbox"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:onClick="onCheckboxClick"
-        android:text="@string/default_color"
-        android:fontFamily="@font/honeypirls"
-        android:textSize="25sp"
-        android:gravity="center"
-        android:background="@drawable/rainbow_button"/>
 
 </LinearLayout>
