@@ -17,6 +17,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,10 +145,6 @@ public class GameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
-
-        //Color user picked to highlight in color fragment
-        SharedPreferences sharedPref = this.requireActivity().getPreferences(Context.MODE_PRIVATE);
-        int selectedColor = sharedPref.getInt("color", R.color.yellow);
 
         return inflater.inflate(R.layout.fragment_game, container, false);
     }
@@ -282,6 +279,7 @@ public class GameFragment extends Fragment {
                 TextView cell = new TextView(requireContext());
                 cell.setText(String.valueOf(grid[i][j]));
                 cell.setPadding(40, 20, 30, 40);
+
                 cell.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
@@ -299,6 +297,9 @@ public class GameFragment extends Fragment {
         Log.d("CELL-CLICKED", "Selected char: " + selectedChar);
         String selectedWord = checkForWord(row, col);
 
+        Integer selectedColor = colorViewModel.getSelectedColor().getValue();
+        TableLayout tableLayout = rootView.findViewById(R.id.tableLayout);
+
         if (selectedWord != null) {
             Log.d("WORD-SELECTED", "Selected word: " + selectedWord);
             viewModel.removeWord(selectedWord);
@@ -308,6 +309,14 @@ public class GameFragment extends Fragment {
             List<String> remainingWords = viewModel.getWords();
             if (remainingWords != null && remainingWords.isEmpty()) {
                 congratualtionsToast.show();
+            }
+        }
+        // Apply the selected color to the clicked cell (TextView)
+        if (selectedColor != null) {
+            TableRow tableRow = (TableRow) tableLayout.getChildAt(row);
+            if (tableRow != null) {
+                TextView selectedCell = (TextView) tableRow.getChildAt(col);
+                selectedCell.setBackgroundColor(selectedColor);
             }
         }
     }

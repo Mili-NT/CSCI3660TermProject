@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
             ImageView star = new ImageView(this);
             star.setImageResource(R.drawable.star_shape); // Single star drawable
 
+            int duration = getRandomDuration();
+            int delay = getRandomDelay();
+
             //sets size of stars
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -58,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
             params.setMargins(getRandomPosition(), getRandomPosition(), 0, 0);
             star.setLayoutParams(params);
 
-            int duration = getRandomDuration();
-            int delay = getRandomDelay();
             starDelays.add(delay);
 
             // Apply twinkling animation to stars
