@@ -20,6 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/*
+Features:
+    - Fragments, Navigation, ViewModels
+    - Words API integration
+        - retrofit usage
+    - SharedPreferences usage (API + Color)
+    - Color picker
+    - Word grid generation
+    - Word placement and selection
+    - New game FAB
+*/
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navView;
     private NavHostFragment navHostFragment;

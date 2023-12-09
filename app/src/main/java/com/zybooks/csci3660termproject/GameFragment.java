@@ -83,7 +83,7 @@ public class GameFragment extends Fragment {
         TextView wordBankTextView = view.findViewById(R.id.word_bank);
         // If user does not have an API key, this forces them to go to the settings fragment
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
-        if (userAPIKey == null) {
+        if (userAPIKey == null || userAPIKey.equals("")) {
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(R.id.settings_Fragment);
         } else {

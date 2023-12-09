@@ -13,19 +13,11 @@ import com.zybooks.csci3660termproject.api.WordAPIManager;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class SettingsFragment extends Fragment {
 
     public SettingsFragment() {
         // Required empty public constructor
-    }
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -45,6 +37,7 @@ public class SettingsFragment extends Fragment {
         if (userAPIKey != null) {
             editTextApiKey.setHint(userAPIKey); // Updates text hint to display key -- not necessary but looks good
         }
+        // API key isn't saved until button is pressed
         saveApiKeyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
