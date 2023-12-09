@@ -50,6 +50,8 @@ public class GameFragment extends Fragment {
     private ColorViewModel colorViewModel;
 
     private View rootView;
+    private int selectedRow = -1;
+    private int selectedCol = -1;
 
     public GameFragment() {
         // Required empty public constructor
@@ -315,7 +317,19 @@ public class GameFragment extends Fragment {
             TableRow tableRow = (TableRow) tableLayout.getChildAt(row);
             if (tableRow != null) {
                 TextView selectedCell = (TextView) tableRow.getChildAt(col);
-                selectedCell.setBackgroundColor(selectedColor);
+                if (row == selectedRow && col == selectedCol) {
+                    // Deselect the previously selected cell by setting its background to transparent
+                    selectedCell.setBackgroundColor(Color.TRANSPARENT);
+                    selectedRow = -1; // Reset the selected row and column
+                    selectedCol = -1;
+                }
+                else {
+                    // Set the background color for the newly selected cell
+                    selectedCell.setBackgroundColor(selectedColor);
+                    // Update the selected row and column
+                    selectedRow = row;
+                    selectedCol = col;
+                }
             }
         }
     }
