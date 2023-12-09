@@ -9,6 +9,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navView;
     private NavHostFragment navHostFragment;
     private ColorViewModel colorViewModel;
+    private int starCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,49 +40,66 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = navHostFragment.getNavController();
             NavigationUI.setupWithNavController(navView, navController);
         }
-
-        // List to store individual delays for each star
-        List<Integer> starDelays = new ArrayList<>();
-        FrameLayout container = findViewById(R.id.star_container);
-
-        //Add stars to background in activity main
-        for (int i = 0; i < 50; i++) {
-            ImageView star = new ImageView(this);
-            star.setImageResource(R.drawable.star_shape); // Single star drawable
-
-            int duration = getRandomDuration();
-            int delay = getRandomDelay();
-
-            //sets size of stars
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT
-            );
-
-            // Set random positions for stars
-            params.setMargins(getRandomPosition(), getRandomPosition(), 0, 0);
-            star.setLayoutParams(params);
-
-            starDelays.add(delay);
-
-            // Apply twinkling animation to stars
-            star.setAnimation(AnimationUtils.loadAnimation(this, R.anim.star_fade));
-            container.addView(star);
-        }
+        addStarsWithDelay();
     }
 
     //Sporadically spread stars out
     private int getRandomPosition() {
-        return (int) (Math.random() * 1000); // Adjust this range as needed
+        return (int) (Math.random() * 1000);
     }
 
-    // Method to get random duration for twinkling animation
+    //Get random duration for twinkling animation
     private int getRandomDuration() {
-        return (int) (Math.random() * 2000); // Adjust this range as needed
+        return (int) ((Math.random() * 2000)+ 1000);
     }
-    // Method to get random delay for twinkling animation
+
+    //Random delay so stars appear staggered
     private int getRandomDelay() {
-        return new Random().nextInt(1000); // Adjust this range as needed
+        return new Random().nextInt(1000);
+    }
+
+    //Adds star with delay between stars
+    private void addStarsWithDelay() {
+        final Handler handler = new Handler();
+        final int delayMillis = 200;
+        final FrameLayout container = findViewById(R.id.star_container); // Your FrameLayout
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                addStar(container);
+                starCount++;
+
+                if (starCount < 100) {
+                    handler.postDelayed(this, delayMillis);
+                }
+            }
+        }, delayMillis);
+    }
+
+    //adds star to the background and makes it twinkle
+    private void addStar(FrameLayout container) {
+        ImageView star = new ImageView(this);
+        star.setImageResource(R.drawable.star_shape); // Single star drawable
+
+        int duration = getRandomDuration();
+        int delay = getRandomDelay();
+
+        //sets size of stars
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(getRandomPosition(), getRandomPosition(), 0, 0);
+        star.setLayoutParams(params);
+
+        //Makes stars twinkle
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.star_fade);
+        animation.setDuration(duration);
+        animation.setStartOffset(delay);
+        star.startAnimation(animation);
+
+        container.addView(star);
     }
 }
 

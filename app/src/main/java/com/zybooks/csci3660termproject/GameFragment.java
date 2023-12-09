@@ -128,7 +128,6 @@ public class GameFragment extends Fragment {
         colorViewModel.getSelectedColor().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer color) {
-                // TODO: TEST, IMPLEMENT HIGHLIGHTER HERE
                 wordBankTextView.setTextColor(color);
             }
         });
@@ -311,7 +310,7 @@ public class GameFragment extends Fragment {
                 congratualtionsToast.show();
             }
         }
-        // Apply the selected color to the clicked cell (TextView)
+        // Apply the selected color to the clicked cell
         if (selectedColor != null) {
             TableRow tableRow = (TableRow) tableLayout.getChildAt(row);
             if (tableRow != null) {
