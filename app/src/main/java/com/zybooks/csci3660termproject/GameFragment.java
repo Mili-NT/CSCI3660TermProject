@@ -116,7 +116,7 @@ public class GameFragment extends Fragment {
             viewModel.setWordSearchGrid(generateWordSearchGrid(currentWords));
         }
 
-        congratualtionsToast= Toast.makeText(requireContext(), "Congratulations! Press the refresh button for a new game.", Toast.LENGTH_LONG);
+        congratulationsToast = Toast.makeText(requireContext(), "Congratulations! Press the refresh button for a new game.", Toast.LENGTH_LONG);
         displayGrid(tableLayout, viewModel.getWordSearchGrid());
         Log.d("GRID", "First char array: " + Arrays.deepToString(viewModel.getWordSearchGrid()));
         FloatingActionButton fab = view.findViewById(R.id.fab);
@@ -179,7 +179,7 @@ public class GameFragment extends Fragment {
             }
         });
     }
-    private Toast congratualtionsToast;
+    private Toast congratulationsToast;
     private char[][] generateWordSearchGrid(List<String> words) {
         int numRows = viewModel.getCurrentGridSize();
         int numCols = viewModel.getCurrentGridSize();;
@@ -309,7 +309,7 @@ public class GameFragment extends Fragment {
 
             List<String> remainingWords = viewModel.getWords();
             if (remainingWords != null && remainingWords.isEmpty()) {
-                congratualtionsToast.show();
+                congratulationsToast.show();
             }
         }
         // Apply the selected color to the clicked cell
