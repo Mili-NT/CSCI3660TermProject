@@ -21,16 +21,11 @@ import java.util.List;
 import java.util.Random;
 
 /*
-API Key for presentation: ------------
-Features:
-    - Fragments, Navigation, ViewModels
-    - Words API integration
-        - retrofit usage
-    - SharedPreferences usage (API + Color)
-    - Color picker
-    - Word grid generation
-    - Word placement and selection
-    - New game FAB
+TODO: Redesign grid to not touch the sides of the screen
+TODO: Implement variable length and count of words
+TODO: Change the font and spacing for the word bank
+TODO: Change the text color of the grid letters to complement the selected highlight color
+TODO?: Variable grid sizes
 */
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navView;
