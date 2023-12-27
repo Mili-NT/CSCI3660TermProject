@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,6 @@ import androidx.lifecycle.ViewModelProvider;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class ColorFragment extends Fragment {
-    private static final String COLOR_PREF = "colorPref";
-    private static final String COLOR_KEY = "colorKey";
     // text view variable to set the color for GFG text
     private TextView gfgTextView;
 
@@ -34,7 +33,6 @@ public class ColorFragment extends Fragment {
     private View mColorPreview;
 
     // this is the default color of the preview box
-    private int mDefaultColor;
     private ColorViewModel colorViewModel;
 
     @Override
@@ -44,12 +42,10 @@ public class ColorFragment extends Fragment {
     //inflates color fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_color,container, false);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_color,container, false);
     }
 
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         colorViewModel = new ViewModelProvider(requireActivity()).get(ColorViewModel.class);
         // register the GFG text with appropriate ID
@@ -65,10 +61,16 @@ public class ColorFragment extends Fragment {
         mColorPreview = view.findViewById(R.id.preview_selected_color);
 
         // set the default color to 0 as it is black
-        SharedPreferences prefs = requireActivity().getSharedPreferences(COLOR_PREF, Context.MODE_PRIVATE);
-        mDefaultColor = prefs.getInt(COLOR_KEY, Color.BLACK);
+        int mDefaultColor = ColorViewModel.getColorFromPreference(requireActivity());
+        colorViewModel.setSelectedColor(mDefaultColor);
         mColorPreview.setBackgroundColor(mDefaultColor);
-        gfgTextView.setTextColor(mDefaultColor);
+        if (mDefaultColor == Color.BLACK) {
+            // Black text is hard to see against the starry background
+            gfgTextView.setTextColor(Color.WHITE);
+        }
+        else {
+            gfgTextView.setTextColor(mDefaultColor);
+        }
         // button open the AmbilWanra color picker dialog.
         mPickColorButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +91,10 @@ public class ColorFragment extends Fragment {
                 // variable its value will be changed as
                 // soon as ok button is clicked from the
                 // color picker dialog.
-                gfgTextView.setTextColor(mDefaultColor);
+                Integer selectedColor = colorViewModel.getSelectedColor().getValue();
+                colorViewModel.setSelectedColor(selectedColor);
+                gfgTextView.setTextColor(selectedColor);
+                colorViewModel.saveColorToSharedPreferences(selectedColor, requireContext());
             }
         });
     }
@@ -101,10 +106,9 @@ public class ColorFragment extends Fragment {
     // those are onCancel and onOk which handle the "Cancel"
     // and "OK" button of color picker dialog
     public void openColorPickerDialogue() {
-
         // the AmbilWarnaDialog callback needs 3 parameters
         // one is the context, second is default color,
-        final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(requireContext(), mDefaultColor,
+        final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(requireContext(), colorViewModel.getSelectedColor().getValue(),
                 new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onCancel(AmbilWarnaDialog dialog) {
@@ -121,20 +125,13 @@ public class ColorFragment extends Fragment {
                         // it is returned when the OK
                         // button is clicked from the
                         // color picker dialog
-                        mDefaultColor = color;
-                        colorViewModel.setSelectedColor(mDefaultColor);
-                        saveColorToSharedPreferences(mDefaultColor);
+                        colorViewModel.setSelectedColor(color);
                         // now change the picked color
                         // preview box to mDefaultColor
-                        mColorPreview.setBackgroundColor(mDefaultColor);
+                        mColorPreview.setBackgroundColor(color);
 
                     }
                 });
         colorPickerDialogue.show();
-    }
-    private void saveColorToSharedPreferences(int color) {
-        SharedPreferences.Editor editor = requireActivity().getSharedPreferences(COLOR_PREF, Context.MODE_PRIVATE).edit();
-        editor.putInt(COLOR_KEY, color);
-        editor.apply();
     }
 }

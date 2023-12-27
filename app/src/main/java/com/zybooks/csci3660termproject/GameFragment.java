@@ -1,6 +1,7 @@
 package com.zybooks.csci3660termproject;
 
 import static com.google.android.material.color.MaterialColors.getColor;
+import org.apache.commons.lang3.StringUtils;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,7 @@ import com.zybooks.csci3660termproject.api.WordAPIManager;
 import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -127,6 +130,9 @@ public class GameFragment extends Fragment {
             }
         });
         // Uses the shared viewmodel to check for color changes
+        int defaultColor = ColorViewModel.getColorFromPreference(requireContext());
+        wordBankTextView.setTextColor(defaultColor);
+        colorViewModel.setSelectedColor(defaultColor);
         colorViewModel.getSelectedColor().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer color) {
@@ -183,15 +189,37 @@ public class GameFragment extends Fragment {
             }
         });
     }
+
+    private String gridDebugStringBuilder(char[][] grid) {
+        char[][] newGrid = Arrays.copyOf(grid, grid.length);
+        for (int i = 0; i < grid.length; i++) {
+            newGrid[i] = Arrays.copyOf(grid[i], grid[i].length);
+        }
+        StringBuilder gridStringBuilder = new StringBuilder();
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                boolean isEmpty = (int) newGrid[i][j] == 0;
+                if (isEmpty) {
+                    newGrid[i][j] = 'X';
+                }
+            }
+        }
+        for (char[] row : newGrid) {
+            String rowString = StringUtils.join(row, ' ');
+            gridStringBuilder.append(rowString).append(System.lineSeparator());
+        }
+        return gridStringBuilder.toString();
+    }
+
+
     private char[][] generateWordSearchGrid(List<String> words) {
         int numRows = viewModel.getCurrentGridSize();
-        int numCols = viewModel.getCurrentGridSize();;
-
+        int numCols = viewModel.getCurrentGridSize();
         char[][] grid = new char[numRows][numCols];
-
+        Log.d("GRD", "generateWordSearchGrid, initial grid: \n" + gridDebugStringBuilder(grid) + "\n");
         // Place words in the grid
         for (String word : words) {
-            placeWord(grid, word, 100); // Try placing each word up to 100 times
+            placeWord(grid, word); // Try placing each word up to 100 times
         }
 
         // Fill the remaining empty spaces with random letters
@@ -207,7 +235,7 @@ public class GameFragment extends Fragment {
     }
 
 
-    private void placeWord(char[][] grid, String word, int maxAttempts) {
+    private void placeWord(char[][] grid, String word) {
         int length = word.length();
         int startRow, startCol;
         boolean placed = false;
@@ -215,7 +243,7 @@ public class GameFragment extends Fragment {
         // maxAttempts is kept at 100 (reasonable value for four 6 letter words on a 10x10)
         int attempts = 0;
 
-        while (!placed && attempts < maxAttempts) {
+        while (!placed && attempts < 100) {
             startRow = (int) (Math.random() * viewModel.getCurrentGridSize());
             startCol = (int) (Math.random() * viewModel.getCurrentGridSize());
 
@@ -242,7 +270,7 @@ public class GameFragment extends Fragment {
 
                     grid[row][col] = word.charAt(i);
                 }
-
+                Log.d("GRD", "New Grid: \n" + gridDebugStringBuilder(grid) + "\n");
                 placed = true;
             }
 
@@ -289,7 +317,6 @@ public class GameFragment extends Fragment {
                 TextView cell = new TextView(requireContext());
                 cell.setText(String.valueOf(grid[i][j]));
                 cell.setPadding(40, 20, 30, 40);
-
                 cell.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
