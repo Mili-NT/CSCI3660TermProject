@@ -4,6 +4,8 @@ import static com.google.android.material.color.MaterialColors.getColor;
 import org.apache.commons.lang3.StringUtils;
 
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,10 +18,12 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -49,6 +53,8 @@ public class GameFragment extends Fragment {
     private ColorViewModel colorViewModel;
 
     private View rootView;
+    private TextView wordBankTextView;
+    private FloatingActionButton fab;
     private int selectedRow = -1;
     private int selectedCol = -1;
     private Toast congratulationsToast;
@@ -82,9 +88,11 @@ public class GameFragment extends Fragment {
         // Initiate both viewmodels to provide permanence to changes made in Game and Color Fragments
         colorViewModel = new ViewModelProvider(requireActivity()).get(ColorViewModel.class);
         GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+        // Get the views
         rootView = view;
         TableLayout tableLayout = view.findViewById(R.id.tableLayout);
-        TextView wordBankTextView = view.findViewById(R.id.word_bank);
+        wordBankTextView = view.findViewById(R.id.word_bank);
+        fab = view.findViewById(R.id.fab);
         // If user does not have an API key, this forces them to go to the settings fragment
         String userAPIKey = WordAPIManager.getApiKey(requireContext());
         if (userAPIKey == null || userAPIKey.equals("")) {
@@ -101,7 +109,6 @@ public class GameFragment extends Fragment {
         if (viewModel.getWords() == null) {
             newWords();
         }
-
         // Create a StringBuilder to build the text for the TextView
         StringBuilder wordBankText = new StringBuilder();
 
@@ -122,7 +129,6 @@ public class GameFragment extends Fragment {
         // Creates the grid from data in viewmodel
         displayGrid(tableLayout, viewModel.getWordSearchGrid());
         // New game / Refresh FAB
-        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,6 +153,17 @@ public class GameFragment extends Fragment {
                 showPopup();
             }
         }, 1000);
+        ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                rootView.getViewTreeObserver().removeOnPreDrawListener(this);
+                if (areViewsOverlapping(fab, wordBankTextView)) {
+                    hideFAB();
+                }
+                return true;
+            }
+        });
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -321,6 +338,10 @@ public class GameFragment extends Fragment {
                 // Sets cell padding and gravity
                 cell.setPadding(40, 20, 30, 40);
                 cell.setGravity(Gravity.CENTER); // This prevents the letters clipping
+                cell.setTextColor(Color.WHITE);
+                cell.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                cell.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                cell.setShadowLayer(6f, 0f, 0f, Color.WHITE);
                 // Applies row parameters
                 TableRow.LayoutParams params = new TableRow.LayoutParams(
                         TableRow.LayoutParams.WRAP_CONTENT,
@@ -500,7 +521,21 @@ public class GameFragment extends Fragment {
             getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
         }
     }
+    private void hideFAB() {
+        fab.setVisibility(View.GONE);
+    }
+    private boolean areViewsOverlapping(View viewOne, View viewTwo) {
+        int[] firstPosition = new int[2];
+        int[] secondPosition = new int[2];
 
+        viewOne.getLocationOnScreen(firstPosition);
+        viewTwo.getLocationOnScreen(secondPosition);
 
+        Rect rectFirstView = new Rect(firstPosition[0], firstPosition[1],
+                firstPosition[0] + viewOne.getMeasuredWidth(), firstPosition[1] + viewOne.getMeasuredHeight());
+        Rect rectSecondView = new Rect(secondPosition[0], secondPosition[1],
+                secondPosition[0] + viewTwo.getMeasuredWidth(), secondPosition[1] + viewTwo.getMeasuredHeight());
 
+        return rectFirstView.intersect(rectSecondView);
+    }
 }
