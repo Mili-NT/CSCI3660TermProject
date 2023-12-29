@@ -28,19 +28,16 @@ TODO: Change the text color of the grid letters to complement the selected highl
 TODO?: Variable grid sizes
 */
 public class MainActivity extends AppCompatActivity {
-    private BottomNavigationView navView;
-    private NavHostFragment navHostFragment;
-    private ColorViewModel colorViewModel;
     private int starCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        colorViewModel = new ViewModelProvider(this).get(ColorViewModel.class);
+        ColorViewModel colorViewModel = new ViewModelProvider(this).get(ColorViewModel.class);
         //nav bar
-        navView = findViewById(R.id.nav_view);
-        navHostFragment = (NavHostFragment) getSupportFragmentManager()
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
 
         if (navHostFragment != null) {

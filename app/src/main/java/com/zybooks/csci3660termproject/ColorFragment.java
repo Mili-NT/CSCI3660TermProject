@@ -25,10 +25,6 @@ public class ColorFragment extends Fragment {
     // text view variable to set the color for GFG text
     private TextView gfgTextView;
 
-    // two buttons to open color picker dialog and one to
-    // set the color for GFG text
-    private Button mSetColorButton, mPickColorButton;
-
     // view box to preview the selected color
     private View mColorPreview;
 
@@ -53,8 +49,10 @@ public class ColorFragment extends Fragment {
 
         // register two of the buttons with their
         // appropriate IDs
-        mPickColorButton = view.findViewById(R.id.pick_color_button);
-        mSetColorButton = view.findViewById(R.id.set_color_button);
+        Button mPickColorButton = view.findViewById(R.id.pick_color_button);
+        // two buttons to open color picker dialog and one to
+        // set the color for GFG text
+        Button mSetColorButton = view.findViewById(R.id.set_color_button);
 
         // and also register the view which shows the
         // preview of the color chosen by the user
@@ -92,6 +90,10 @@ public class ColorFragment extends Fragment {
                 // soon as ok button is clicked from the
                 // color picker dialog.
                 Integer selectedColor = colorViewModel.getSelectedColor().getValue();
+                if (selectedColor == null) {
+                    // Prevent potential null pointer exception
+                    selectedColor = Color.BLACK;
+                }
                 colorViewModel.setSelectedColor(selectedColor);
                 gfgTextView.setTextColor(selectedColor);
                 colorViewModel.saveColorToSharedPreferences(selectedColor, requireContext());
