@@ -26,6 +26,7 @@ TODO: Implement variable length and count of words (will involve making word ban
 TODO: Change the font and spacing for the word bank
 TODO: Change the text color of the grid letters to complement the selected highlight color
 TODO?: Variable grid sizes
+TODO?: Change grid generation to allow for intersecting words
 */
 public class MainActivity extends AppCompatActivity {
     private int starCount = 0;
