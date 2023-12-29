@@ -126,7 +126,7 @@ public class GameFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 newWords();
-                updateBankAndGrid();
+                newGame();
             }
         });
         // Uses the shared viewmodel to check for color changes
@@ -317,16 +317,13 @@ public class GameFragment extends Fragment {
                 TextView cell = new TextView(requireContext());
                 cell.setText(String.valueOf(grid[i][j]));
                 cell.setPadding(40, 20, 30, 40);
+                // Weight to prevent column clipping
                 TableRow.LayoutParams params = new TableRow.LayoutParams(
                         0,
                         TableRow.LayoutParams.WRAP_CONTENT, 1f);
                 cell.setLayoutParams(params);
-                cell.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view){
-                        onCellClicked(row,col);
-                    }
-                });
+                // Adds the click listener for selection
+                cell.setOnClickListener(view -> onCellClicked(row,col));
                 tableRow.addView(cell);
             }
             tableLayout.addView(tableRow);
@@ -455,7 +452,7 @@ public class GameFragment extends Fragment {
 
         return null;
     }
-    private void updateBankAndGrid() {
+    private void newGame() {
         // Updates both the bank and grid for a new game
         // Never any need to update the grid without the bank
         updateWordBank();
@@ -474,7 +471,7 @@ public class GameFragment extends Fragment {
 
     private void checkIfAllWordsGenerated() {
         if (viewModel.getWords() != null && viewModel.getWords().size() == 4) {
-            updateBankAndGrid();
+            newGame();
 
         }
     }

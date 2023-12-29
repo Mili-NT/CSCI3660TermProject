@@ -22,6 +22,7 @@ import java.util.Random;
 
 /*
 DONE: Redesign grid to not touch the sides of the screen
+TODO: Make highlighter automatic
 TODO: Implement variable length and count of words (will involve making word bank scrollable)
 TODO: Change the font and spacing for the word bank
 TODO: Change the text color of the grid letters to complement the selected highlight color
