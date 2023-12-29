@@ -317,6 +317,10 @@ public class GameFragment extends Fragment {
                 TextView cell = new TextView(requireContext());
                 cell.setText(String.valueOf(grid[i][j]));
                 cell.setPadding(40, 20, 30, 40);
+                TableRow.LayoutParams params = new TableRow.LayoutParams(
+                        0,
+                        TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                cell.setLayoutParams(params);
                 cell.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
