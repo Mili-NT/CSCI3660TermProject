@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Random;
 
 /*
+TODO: Fix star animation not taking up the entire screen
 TODO: Make highlighter automatic
 TODO: Implement variable length and count of words (will involve making word bank scrollable)
 TODO: Change the font and spacing for the word bank
