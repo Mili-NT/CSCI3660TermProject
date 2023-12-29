@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -315,16 +316,20 @@ public class GameFragment extends Fragment {
                 final int row = i;
                 final int col = j;
                 TextView cell = new TextView(requireContext());
+                // Sets cell contents (letter)
                 cell.setText(String.valueOf(grid[i][j]));
+                // Sets cell padding and gravity
                 cell.setPadding(40, 20, 30, 40);
-                // Weight to prevent column clipping
+                cell.setGravity(Gravity.CENTER); // This prevents the letters clipping
+                // Applies row parameters
                 TableRow.LayoutParams params = new TableRow.LayoutParams(
-                        0,
+                        TableRow.LayoutParams.WRAP_CONTENT,
                         TableRow.LayoutParams.WRAP_CONTENT, 1f);
                 cell.setLayoutParams(params);
                 // Adds the click listener for selection
-                cell.setOnClickListener(view -> onCellClicked(row,col));
+                cell.setOnClickListener(view -> onCellClicked(row, col));
                 tableRow.addView(cell);
+
             }
             tableLayout.addView(tableRow);
         }
