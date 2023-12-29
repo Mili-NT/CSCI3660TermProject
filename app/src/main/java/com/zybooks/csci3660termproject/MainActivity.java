@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 /*
-TODO: Redesign grid to not touch the sides of the screen
+DONE: Redesign grid to not touch the sides of the screen
 TODO: Implement variable length and count of words
 TODO: Change the font and spacing for the word bank
 TODO: Change the text color of the grid letters to complement the selected highlight color
