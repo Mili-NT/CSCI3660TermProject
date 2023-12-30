@@ -10,6 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -20,10 +21,10 @@ import java.util.List;
 import java.util.Random;
 
 /*
-TODO: Fix star animation not taking up the entire screen
-TODO: Make highlighter automatic
-TODO: Implement variable length and count of words (will involve making word bank scrollable)
+TODO: Redesign word bank to be able to fit more words/scroll
+TODO: Implement variable length and count of words
 TODO: Change the font and spacing for the word bank
+TODO: Make highlighter automatic
 TODO: Change the text color of the grid letters to complement the selected highlight color
 TODO?: Variable grid sizes
 TODO?: Change grid generation to allow for intersecting words
@@ -49,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Sporadically spread stars out
-    private int getRandomPosition() {
-        return (int) (Math.random() * 1000);
+    private int getRandomPosition(int maximumPosition) {
+        return (int) (Math.random() * maximumPosition);
     }
 
     //Get random duration for twinkling animation
@@ -95,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT
         );
-        params.setMargins(getRandomPosition(), getRandomPosition(), 0, 0);
+        View nav_host_frag = this.findViewById(R.id.nav_host_fragment);
+        params.setMargins(getRandomPosition(nav_host_frag.getWidth()), getRandomPosition(nav_host_frag.getHeight()), 0, 0);
         star.setLayoutParams(params);
 
         //Makes stars twinkle

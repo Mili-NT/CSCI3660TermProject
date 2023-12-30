@@ -1,6 +1,5 @@
 package com.zybooks.csci3660termproject;
 
-import static com.google.android.material.color.MaterialColors.getColor;
 import org.apache.commons.lang3.StringUtils;
 
 import android.graphics.Color;
