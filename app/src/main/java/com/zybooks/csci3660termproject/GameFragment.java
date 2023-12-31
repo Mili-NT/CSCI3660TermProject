@@ -423,7 +423,6 @@ public class GameFragment extends Fragment {
             gameViewModel.removeWord(selectedWord);
             // Call updateWordBank to regenerate the word bank + text view
             updateWordBank();
-            checkIfAllWordsGenerated();
             // Game end logic
             List<String> remainingWords = gameViewModel.getWordsLiveData().getValue();
             if (remainingWords != null && remainingWords.isEmpty()) {
@@ -515,9 +514,8 @@ public class GameFragment extends Fragment {
         });
     }
     private void checkIfAllWordsGenerated() {
-        if (gameViewModel.getWordsLiveData().getValue() != null && gameViewModel.getWordsLiveData().getValue().size() == 4) {
+        if (gameViewModel.getWordsLiveData().getValue() != null) {
             newGame();
-
         }
     }
     //

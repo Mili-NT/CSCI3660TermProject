@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.Random;
 
 /*
-TODO: Bug somewhere in grid generation or word checking logic in GameFragment.java
-    - When newWords generates more than 4 words,
-
 TODO: UI polishing
     - RecyclerView expands while words are added/removed, moving the grid.
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
