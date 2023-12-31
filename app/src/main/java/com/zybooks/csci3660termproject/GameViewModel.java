@@ -17,7 +17,8 @@ public class GameViewModel extends ViewModel {
     private boolean displayPopup = true;
     // Word grid and bank
     private char[][] wordSearchGrid;
-    private ArrayList<String> words;
+    private MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
+
     // Getters and Setters
     public WordAPIInterface getWordAPI() {
         return wordAPI;
@@ -32,15 +33,29 @@ public class GameViewModel extends ViewModel {
     }
 
     public char[][] getWordSearchGrid() { return wordSearchGrid; }
-    public ArrayList<String> getWords() { return words; }
-    public void setWords(ArrayList<String> newWords) {
-        this.words = newWords;
+
+    public LiveData<List<String>> getWordsLiveData() {
+        return wordsLiveData;
     }
+
+    public void setWords(List<String> newWords) {
+        this.wordsLiveData.setValue(newWords);
+    }
+
     public void removeWord(String word) {
-        this.words.remove(word);
+        List<String> currentWords = this.wordsLiveData.getValue();
+        if (currentWords != null) {
+            currentWords.remove(word);
+            this.wordsLiveData.setValue(currentWords);
+        }
     }
+
     public void addWord(String word) {
-        this.words.add(word.toLowerCase());
+        List<String> currentWords = this.wordsLiveData.getValue();
+        if (currentWords != null) {
+            currentWords.add(word.toLowerCase());
+            this.wordsLiveData.setValue(currentWords);
+        }
     }
     public void setWordSearchGrid(char[][] newWordSearchGrid) {
         this.wordSearchGrid = newWordSearchGrid;

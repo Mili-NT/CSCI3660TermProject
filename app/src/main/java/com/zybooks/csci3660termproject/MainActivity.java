@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Random;
 
 /*
-TODO: Redesign word bank to be able to fit more words/scroll
+TODO: UI polishing
+    - RecyclerView expands while words are added/removed, moving the grid.
+    - Figure out what to do with the FAB when it overlaps with the RecyclerView
+        - hideFAB() disabled until then.
 TODO: Implement variable length and count of words
 TODO: Change the font and spacing for the word bank
 TODO: Make highlighter automatic
