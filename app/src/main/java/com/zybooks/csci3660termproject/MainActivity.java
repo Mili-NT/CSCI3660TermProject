@@ -22,7 +22,8 @@ import java.util.Random;
 
 /*
 TODO: UI polishing
-    - RecyclerView expands while words are added/removed, moving the grid.
+    - Placeholders work as expected on first run, but upon clicking the fab still expands/contracts
+    - Make grid not refresh until all words are placed
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
         - hideFAB() disabled until then.
 TODO: Implement variable length and count of words

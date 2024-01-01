@@ -1,7 +1,5 @@
 package com.zybooks.csci3660termproject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -17,7 +15,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,8 +37,8 @@ import com.zybooks.csci3660termproject.api.WordAPIManager;
 import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,9 +89,8 @@ public class GameFragment extends Fragment {
             initObserversAndListeners();
             initGameElements();
             initRecyclerView();
+            displayGrid();
         }
-        // Displays the word grid stored in the gameViewModel
-        displayGrid();
     }
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -117,11 +113,15 @@ public class GameFragment extends Fragment {
     // Initialization Methods
     //
     private void initRecyclerView() {
-
         wordBankRecyclerView = this.requireView().findViewById(R.id.wordBankRecyclerView);
         wordBankRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        wordAdapter = new WordAdapter(gameViewModel.getWordsLiveData().getValue(), colorViewModel.getSelectedColor().getValue());
+        boolean createPlaceholderViews = Objects.requireNonNull(gameViewModel.getWordsLiveData().getValue()).size() == 0;
+        if (createPlaceholderViews) {
+            gameViewModel.addPlaceholders();
+        }
+        wordAdapter = new WordAdapter(gameViewModel.getWordsLiveData().getValue(),
+                colorViewModel.getSelectedColor().getValue(),
+                gameViewModel);
         wordBankRecyclerView.setAdapter(wordAdapter);
     }
     private void initObserversAndListeners() {
@@ -420,12 +420,11 @@ public class GameFragment extends Fragment {
 
         if (selectedWord != null) {
             // If the word is in the bank remove it
-            gameViewModel.removeWord(selectedWord);
+            gameViewModel.addToSelectedWords(selectedWord);
             // Call updateWordBank to regenerate the word bank + text view
             updateWordBank();
             // Game end logic
-            List<String> remainingWords = gameViewModel.getWordsLiveData().getValue();
-            if (remainingWords != null && remainingWords.isEmpty()) {
+            if (gameViewModel.getRemainingWordCount() == 0) {
                 congratulationsToast.show();
             }
         }
@@ -456,6 +455,7 @@ public class GameFragment extends Fragment {
     private void newWords() {
         ArrayList<String> newWords = new ArrayList<>();
         gameViewModel.setWords(newWords);
+        gameViewModel.addPlaceholders();
         // Callback function to ensure that we have the words prior to generating the bank
         WordGenerationCallback generationCallback = new WordGenerationCallback() {
             @Override
@@ -469,7 +469,7 @@ public class GameFragment extends Fragment {
             }
         };
         // Actually get the words by calling getRandomWord and passing the callback function
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
         }
     }
@@ -532,6 +532,8 @@ public class GameFragment extends Fragment {
     private void updateWordBank() {
         WordAdapter wordAdapter = (WordAdapter) wordBankRecyclerView.getAdapter();
         assert wordAdapter != null;
+        // Deal with placeholder views
+        gameViewModel.wipePlaceholders();
         wordAdapter.setWords(gameViewModel.getWordsLiveData().getValue());
         wordAdapter.notifyDataSetChanged();
     }

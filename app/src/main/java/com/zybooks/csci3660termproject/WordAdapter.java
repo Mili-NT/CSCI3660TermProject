@@ -1,5 +1,7 @@
 package com.zybooks.csci3660termproject;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +14,12 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
 
     private List<String> words;
     private int selectedColor;
+    private GameViewModel gameViewModel;
 
-    public WordAdapter(List<String> words, int selectedColor) {
+    public WordAdapter(List<String> words, int selectedColor, GameViewModel gameViewModel) {
         this.words = words;
         this.selectedColor = selectedColor;
+        this.gameViewModel = gameViewModel;
     }
 
     @NonNull
@@ -30,7 +34,18 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
     public void onBindViewHolder(@NonNull WordViewHolder holder, int position) {
         String word = words.get(position);
         holder.wordTextView.setText(word);
-        holder.wordTextView.setTextColor(selectedColor);
+        if (word.contains("placeholder")) {
+            holder.wordTextView.setTextColor(Color.TRANSPARENT);
+        }
+        else {
+            holder.wordTextView.setTextColor(selectedColor);
+        }
+        // If word is found, apply a strikethrough
+        if (gameViewModel.isWordFound(word)) {
+            holder.wordTextView.setPaintFlags(holder.wordTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            holder.wordTextView.setPaintFlags(holder.wordTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
     }
 
     @Override
@@ -41,7 +56,9 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
     public void setWords(List<String> newWords) {
         this.words = newWords;
     }
-
+    public void setSelectedColor(int selectedColor) {
+        this.selectedColor = selectedColor;
+    }
     static class WordViewHolder extends RecyclerView.ViewHolder {
         TextView wordTextView;
 
