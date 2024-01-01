@@ -21,16 +21,15 @@ import java.util.List;
 import java.util.Random;
 
 /*
+TODO: Make highlighter automatic
 TODO: UI polishing
     - Implement a good looking placeholder grid and maybe animate the swap
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
         - hideFAB() disabled until then.
 TODO: Implement variable length and count of words
 TODO: Change the font and spacing for the word bank
-TODO: Make highlighter automatic
 TODO: Change the text color of the grid letters to complement the selected highlight color
 TODO?: Variable grid sizes
-TODO?: Change grid generation to allow for intersecting words
 */
 public class MainActivity extends AppCompatActivity {
     private int starCount = 0;
