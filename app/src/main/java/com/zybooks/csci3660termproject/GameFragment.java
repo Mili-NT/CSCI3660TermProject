@@ -115,7 +115,7 @@ public class GameFragment extends Fragment {
     private void initRecyclerView() {
         wordBankRecyclerView = this.requireView().findViewById(R.id.wordBankRecyclerView);
         wordBankRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        boolean createPlaceholderViews = Objects.requireNonNull(gameViewModel.getWordsLiveData().getValue()).size() == 0;
+        boolean createPlaceholderViews = gameViewModel.getWordsLiveData().getValue().size() == 0;
         if (createPlaceholderViews) {
             gameViewModel.addPlaceholders();
         }
@@ -138,7 +138,6 @@ public class GameFragment extends Fragment {
         });
         fab.setOnClickListener(view -> {
             newWords();
-            newGame();
         });
         colorViewModel.getSelectedColor().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
@@ -469,7 +468,7 @@ public class GameFragment extends Fragment {
             }
         };
         // Actually get the words by calling getRandomWord and passing the callback function
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < gameViewModel.getTotalWordCount(); i++) {
             getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
         }
     }
@@ -524,9 +523,11 @@ public class GameFragment extends Fragment {
     private void newGame() {
         // Updates both the bank and grid for a new game
         // Never any need to update the grid without the bank
-        updateWordBank();
         generateWordSearchGrid();
-        displayGrid();
+        if (gameViewModel.getCurrentWordCount() == gameViewModel.getTotalWordCount()) {
+            updateWordBank();
+            displayGrid();
+        }
     }
     @SuppressLint("NotifyDataSetChanged")
     private void updateWordBank() {

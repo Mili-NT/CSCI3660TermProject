@@ -19,6 +19,9 @@ public class GameViewModel extends ViewModel {
     private MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
     private ArrayList<String> selectedWords = new ArrayList<>();
     private int remainingWordCount = 0;
+
+    private int totalWordCount = 6;
+
     // Getters and Setters
     public WordAPIInterface getWordAPI() {
         return wordAPI;
@@ -48,6 +51,19 @@ public class GameViewModel extends ViewModel {
         return wordsLiveData;
     }
 
+    public int getTotalWordCount() {
+        return totalWordCount;
+    }
+    public int getCurrentWordCount() {
+        int currentWordCount = 0;
+        for (int i = 0; i < this.wordsLiveData.getValue().size(); i++) {
+            String atPos = this.wordsLiveData.getValue().get(i);
+            if (!atPos.contains("placeholder")) {
+                currentWordCount++;
+            }
+        }
+        return currentWordCount;
+    }
     public void setWords(List<String> newWords) {
         this.wordsLiveData.setValue(newWords);
         this.setRemainingWordCount();
