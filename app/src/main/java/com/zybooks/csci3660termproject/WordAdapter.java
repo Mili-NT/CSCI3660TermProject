@@ -14,7 +14,7 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
 
     private List<String> words;
     private int selectedColor;
-    private GameViewModel gameViewModel;
+    private final GameViewModel gameViewModel;
 
     public WordAdapter(List<String> words, int selectedColor, GameViewModel gameViewModel) {
         this.words = words;

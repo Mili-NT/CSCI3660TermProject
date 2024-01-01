@@ -11,47 +11,47 @@ import java.util.List;
 public class GameViewModel extends ViewModel {
     // Game variables
     private WordAPIInterface wordAPI;
-    private int currentGridSize = 10;
+    private final int currentGridSize = 10;
     private boolean displayPopup = true;
     // Word grid and bank
     private char[][] wordSearchGrid;
-    private MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
-    private ArrayList<String> selectedWords = new ArrayList<>();
+    private final MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
+    private final ArrayList<String> selectedWords = new ArrayList<>();
     private int remainingWordCount = 0;
 
-    private int totalWordCount = 6;
+    private final int totalWordCount = 6;
 
     // Getters and Setters
     public WordAPIInterface getWordAPI() {
-        return wordAPI;
+        return this.wordAPI;
     }
 
     public int getCurrentGridSize() {
-        return currentGridSize;
+        return this.currentGridSize;
     }
 
     public int getRemainingWordCount() {
-        return remainingWordCount;
+        return this.remainingWordCount;
     }
     public void setRemainingWordCount() {
         for (String word : this.wordsLiveData.getValue()) {
             if (!word.contains("PLACEHOLDER")) {
-                remainingWordCount++;
+                this.remainingWordCount++;
             }
         }
     }
     public boolean shouldDisplayPopup() {
-        return displayPopup;
+        return this.displayPopup;
     }
 
-    public char[][] getWordSearchGrid() { return wordSearchGrid; }
+    public char[][] getWordSearchGrid() { return this.wordSearchGrid; }
 
     public LiveData<List<String>> getWordsLiveData() {
-        return wordsLiveData;
+        return this.wordsLiveData;
     }
 
     public int getTotalWordCount() {
-        return totalWordCount;
+        return this.totalWordCount;
     }
     public int getCurrentWordCount() {
         int currentWordCount = 0;

@@ -20,11 +20,11 @@ public class ColorViewModel extends ViewModel {
     public static final String COLOR_KEY = "colorKey";
 
     public void setSelectedColor(int color) {
-        selectedColor.setValue(color);
+        this.selectedColor.setValue(color);
     }
 
     public LiveData<Integer> getSelectedColor() {
-        return selectedColor;
+        return this.selectedColor;
     }
 
     void saveColorToSharedPreferences(int color, Context context) {
