@@ -42,6 +42,7 @@ import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +60,7 @@ public class GameFragment extends Fragment {
     private int selectedCol = -1;
     private Toast congratulationsToast;
 
+    private Random random = new Random();
     public GameFragment() {
         // Required empty public constructor
     }
@@ -191,7 +193,7 @@ public class GameFragment extends Fragment {
             for (int j = 0; j < numCols; j++) {
                 selectedGrid[i][j] = 0;
                 if (grid[i][j] == '\0') {
-                    grid[i][j] = (char) ('A' + (int) (Math.random() * 26));
+                    grid[i][j] = (char) ('A' + random.nextInt(26));
                 }
             }
         }
@@ -252,24 +254,23 @@ public class GameFragment extends Fragment {
         int attempts = 0;
 
         while (!placed && attempts < 100) {
-            startRow = (int) (Math.random() * gameViewModel.getCurrentGridSize());
-            startCol = (int) (Math.random() * gameViewModel.getCurrentGridSize());
+            startRow = random.nextInt(gameViewModel.getCurrentGridSize());
+            startCol = random.nextInt(gameViewModel.getCurrentGridSize());
 
-            int direction = (int) (Math.random() * 8); // 0 to 7
-
-            int rowIncrement = 0;
-            int colIncrement = 0;
-
-            switch (direction) {
-                case 1: colIncrement = -1; break; // Horizontal (right to left)
-                case 2: rowIncrement = 1; break; // Vertical (top to bottom)
-                case 3: rowIncrement = -1; break; // Vertical (bottom to top)
-                case 4: rowIncrement = 1; colIncrement = 1; break; // Diagonal (top-left to bottom-right)
-                case 5: rowIncrement = -1; colIncrement = -1; break; // Diagonal (bottom-right to top-left)
-                case 6: rowIncrement = 1; colIncrement = -1; break; // Diagonal (top-right to bottom-left)
-                case 7: rowIncrement = -1; colIncrement = 1; break; // Diagonal (bottom-left to top-right)
-                default: colIncrement = 1; break; // Horizontal (left to right)
-            }
+            int[][] directions = {
+                    {0, 1}, // Horizontal (Right->Left)
+                    {0, -1}, // Horizontal (Left->Right)
+                    {1, 0}, // Vertical (Top->Bottom)
+                    {-1, 0}, // Vertical (Bottom->Top)
+                    {1, 1}, // Diagonal (Top Left->Bottom Right)
+                    {-1, -1}, // Diagonal (Bottom Right->Top Left)
+                    {1, -1}, // Diagonal (Top Left->Bottom Right)
+                    {-1, 1}, // Diagonal (Bottom Left->Top Right)
+            };
+            // Select random direction for word
+            int[] direction = directions[random.nextInt(directions.length)];
+            int rowIncrement = direction[0];
+            int colIncrement = direction[1];
 
             if (canPlaceWord(grid, word, startRow, startCol, rowIncrement, colIncrement)) {
                 for (int i = 0; i < length; i++) {
@@ -323,82 +324,44 @@ public class GameFragment extends Fragment {
         char[][] grid = gameViewModel.getWordSearchGrid();
         List<String> validWords = gameViewModel.getWordsLiveData().getValue();
         assert validWords != null;
-        StringBuilder selectedWord = new StringBuilder();
-        // First StringBuilder for checking horizontally (Left to Right)
-        for (int i = col; i < grid[row].length && grid[row][i] != '\0'; i++) {
-            selectedWord.append(grid[row][i]);
-            if (validWords.contains(selectedWord.toString())) {
 
-                return selectedWord.toString();
-            }
-        }
+        int[][] directions = {
+                {0, 1}, // Horizontal (Right->Left)
+                {0, -1}, // Horizontal (Left->Right)
+                {1, 0}, // Vertical (Top->Bottom)
+                {-1, 0}, // Vertical (Bottom->Top)
+                {1, 1}, // Diagonal (Top Left->Bottom Right)
+                {-1, -1}, // Diagonal (Bottom Right->Top Left)
+                {1, -1}, // Diagonal (Top Left->Bottom Right)
+                {-1, 1}, // Diagonal (Bottom Left->Top Right)
+        };
 
-        selectedWord.setLength(0);
+        for (int[] direction : directions) {
+            StringBuilder selectedWord = new StringBuilder();
 
-        for (int i = row; i < grid.length && grid[i][col] != '\0'; i++) {
-            selectedWord.append(grid[i][col]);
-            if (validWords.contains(selectedWord.toString())) {
-                return selectedWord.toString();
-            }
-        }
-        // Reset StringBuilder for checking diagonally (top-left to bottom-right)
-        selectedWord.setLength(0);
+            int rowIncrement = direction[0];
+            int colIncrement = direction[1];
 
-        for (int i = 0; row + i < grid.length && col + i < grid[row].length && grid[row + i][col + i] != '\0'; i++) {
-            selectedWord.append(grid[row + i][col + i]);
-            if (validWords.contains(selectedWord.toString())) {
-                return selectedWord.toString();
-            }
-        }
+            for (int i = 0; checkValidPosition(row + i * rowIncrement, col + i * colIncrement, grid); i++) {
+                selectedWord.append(grid[row + i * rowIncrement][col + i * colIncrement]);
 
-        // Reset StringBuilder for checking diagonally (top-right to bottom-left)
-        selectedWord.setLength(0);
-
-        for (int i = 0; row - i >= 0 && col - i >= 0 && grid[row - i][col - i] != '\0'; i++) {
-            selectedWord.append(grid[row - i][col - i]);
-            if (validWords.contains(selectedWord.toString())) {
-                return selectedWord.toString();
-            }
-        }
-        // Reset StringBuilder for checking diagonally (bottom-left to top-right)
-        selectedWord.setLength(0);
-
-        for (int i = 0; row + i < grid.length && col - i >= 0 && grid[row + i][col - i] != '\0'; i++) {
-            selectedWord.append(grid[row + i][col - i]);
-            if (validWords.contains(selectedWord.toString())) {
-                return selectedWord.toString();
-            }
-        }
-
-        // Reset StringBuilder for checking diagonally (bottom-left to top-right)
-        selectedWord.setLength(0);
-
-        for (int i = 0; row - i >= 0 && col + i < grid[row].length && grid[row - i][col + i] != '\0'; i++) {
-            selectedWord.append(grid[row - i][col + i]);
-            if (validWords.contains(selectedWord.toString())) {
-                return selectedWord.toString();
-            }
-        }
-        // Reset StringBuilder for checking horizontally (right to left)
-        selectedWord.setLength(0);
-
-        for (int i = 0; col - i >= 0 && grid[row][col - i] != '\0'; i++) {
-            selectedWord.append(grid[row][col - i]);
-            if (validWords.contains(selectedWord.toString())) {
-                return selectedWord.toString();
-            }
-        }
-        // Reset StringBuilder for checking vertically (bottom to top)
-        selectedWord.setLength(0);
-
-        for (int i = 0; row - i >= 0 && grid[row - i][col] != '\0'; i++) {
-            selectedWord.append(grid[row - i][col]);
-            if (validWords.contains(selectedWord.toString())) {
-                return selectedWord.toString();
+                if (validWords.contains(selectedWord.toString())) {
+                    return selectedWord.toString();
+                }
             }
         }
 
         return null;
+    }
+
+    /**
+     * @param row Row position of starting cell.
+     * @param col Column position of starting cell.
+     * @param grid The current word search grid.
+     * @return True if selected position is valid, otherwise false.
+     */
+    private boolean checkValidPosition(int row, int col, char[][] grid) {
+        return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length && grid[row][col] != '\0';
     }
     /**
      * @param row Index of the row where the word was selected

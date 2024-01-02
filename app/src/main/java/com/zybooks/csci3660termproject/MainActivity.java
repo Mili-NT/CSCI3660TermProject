@@ -20,7 +20,8 @@ import android.widget.ImageView;
 import java.util.Random;
 
 /*
-TODO: Make highlighter automatic and saveable
+TODO: Make highlighter automatic
+TODO: Replace all usages of Math.random with Random.nextInt()
 TODO: UI polishing
     - Implement a good looking placeholder grid and maybe animate the swap
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
