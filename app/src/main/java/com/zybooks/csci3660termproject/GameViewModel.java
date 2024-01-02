@@ -14,6 +14,7 @@ public class GameViewModel extends ViewModel {
     private boolean displayPopup = true;
     // Word grid and bank
     private char[][] wordSearchGrid;
+    private int[][] selectedGrid;
     private final MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
     private final ArrayList<String> selectedWords = new ArrayList<>();
     private int remainingWordCount = 0;
@@ -41,7 +42,18 @@ public class GameViewModel extends ViewModel {
     public boolean shouldDisplayPopup() {
         return this.displayPopup;
     }
-
+    public boolean isCellSelected(int row, int col) {
+        return this.selectedGrid[row][col] == 1;
+    }
+    public void setSelectedGrid(int[][] selectedGrid) {
+        this.selectedGrid = selectedGrid;
+    }
+    public void setCellSelected(int row, int col) {
+        this.selectedGrid[row][col] = 1;
+    }
+    public void setCellDeselected(int row, int col) {
+        this.selectedGrid[row][col] = 0;
+    }
     public char[][] getWordSearchGrid() { return this.wordSearchGrid; }
 
     public LiveData<List<String>> getWordsLiveData() {
