@@ -38,22 +38,15 @@ public class SettingsFragment extends Fragment {
             editTextApiKey.setHint(userAPIKey); // Updates text hint to display key -- not necessary but looks good
         }
         // API key isn't saved until button is pressed
-        saveApiKeyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveApiKey();
-            }
-        });
+        saveApiKeyButton.setOnClickListener(view -> saveApiKey());
         return rootView;
     }
     private void saveApiKey() {
-        // TODO: Add validity checking?
         // Retrieve the API key from the EditText
         EditText editTextApiKey = requireView().findViewById(R.id.editTextApiKey);
         String userAPIKey = editTextApiKey.getText().toString();
         // Save to shared preferences
         WordAPIManager.saveApiKey(requireContext(), userAPIKey);
-        // TODO: Better looking toast/pop-up
         Toast.makeText(requireContext(), "API Key saved", Toast.LENGTH_SHORT).show();
         editTextApiKey.setHint(userAPIKey);
     }

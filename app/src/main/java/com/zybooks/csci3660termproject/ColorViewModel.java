@@ -3,10 +3,6 @@ package com.zybooks.csci3660termproject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -20,11 +16,11 @@ public class ColorViewModel extends ViewModel {
     public static final String COLOR_KEY = "colorKey";
 
     public void setSelectedColor(int color) {
-        selectedColor.setValue(color);
+        this.selectedColor.setValue(color);
     }
 
     public LiveData<Integer> getSelectedColor() {
-        return selectedColor;
+        return this.selectedColor;
     }
 
     void saveColorToSharedPreferences(int color, Context context) {

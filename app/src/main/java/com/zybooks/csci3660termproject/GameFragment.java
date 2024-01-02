@@ -1,6 +1,6 @@
 package com.zybooks.csci3660termproject;
 
-import org.apache.commons.lang3.StringUtils;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -17,7 +17,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Handler;
-import android.util.Log;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,8 +40,8 @@ import com.zybooks.csci3660termproject.api.WordAPIManager;
 import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,7 +69,6 @@ public class GameFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GameViewModel viewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
     }
     /**
      * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
@@ -92,9 +91,8 @@ public class GameFragment extends Fragment {
             initObserversAndListeners();
             initGameElements();
             initRecyclerView();
+            displayGrid();
         }
-        // Displays the word grid stored in the gameViewModel
-        displayGrid();
     }
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -117,17 +115,21 @@ public class GameFragment extends Fragment {
     // Initialization Methods
     //
     private void initRecyclerView() {
-
         wordBankRecyclerView = this.requireView().findViewById(R.id.wordBankRecyclerView);
         wordBankRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        wordAdapter = new WordAdapter(gameViewModel.getWordsLiveData().getValue(), colorViewModel.getSelectedColor().getValue());
+        boolean createPlaceholderViews = gameViewModel.getWordsLiveData().getValue().isEmpty();
+        if (createPlaceholderViews) {
+            gameViewModel.addPlaceholders();
+        }
+        wordAdapter = new WordAdapter(gameViewModel.getWordsLiveData().getValue(),
+                colorViewModel.getSelectedColor().getValue(),
+                gameViewModel);
         wordBankRecyclerView.setAdapter(wordAdapter);
     }
     private void initObserversAndListeners() {
         FloatingActionButton fab = this.requireView().findViewById(R.id.fab);
         View gameView = this.getView();
-        RecyclerView wordBankRecyclerView = this.requireView().findViewById(R.id.wordBankRecyclerView);
+        wordBankRecyclerView = this.requireView().findViewById(R.id.wordBankRecyclerView);
         gameViewModel.getWordsLiveData().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -136,15 +138,9 @@ public class GameFragment extends Fragment {
                 wordAdapter.notifyDataSetChanged();
             }
         });
-        fab.setOnClickListener(view -> {
-            newWords();
-            newGame();
-        });
-        colorViewModel.getSelectedColor().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer color) {
-                //wordBankTextView.setTextColor(color);
-            }
+        fab.setOnClickListener(view -> newWords());
+        colorViewModel.getSelectedColor().observe(getViewLifecycleOwner(), color -> {
+            //wordBankTextView.setTextColor(color);
         });
         ViewTreeObserver viewTreeObserver = this.requireView().getViewTreeObserver();
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -171,12 +167,7 @@ public class GameFragment extends Fragment {
             generateWordSearchGrid();
         }
         // Pop-up Handler
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showPopup();
-            }
-        }, 1000);
+        new Handler(Looper.getMainLooper()).postDelayed(this::showPopup, 1000);
         // Congratulations Toast
         congratulationsToast = Toast.makeText(requireContext(), "Congratulations! Press the refresh button for a new game.", Toast.LENGTH_LONG);
         // Highlighter Color
@@ -234,8 +225,8 @@ public class GameFragment extends Fragment {
                 cell.setShadowLayer(6f, 0f, 0f, Color.WHITE);
                 // Applies row parameters
                 TableRow.LayoutParams params = new TableRow.LayoutParams(
-                        TableRow.LayoutParams.WRAP_CONTENT,
-                        TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                        WRAP_CONTENT,
+                        WRAP_CONTENT, 1f);
                 cell.setLayoutParams(params);
                 // Adds the click listener for selection
                 cell.setOnClickListener(view -> onCellClicked(row, col));
@@ -251,7 +242,8 @@ public class GameFragment extends Fragment {
      */
     private void placeWord(char[][] grid, String word) {
         int length = word.length();
-        int startRow, startCol;
+        int startRow;
+        int startCol;
         boolean placed = false;
         // App actually generates multiple grids to ensure each word "fits"
         // maxAttempts is kept at 100 (reasonable value for four 6 letter words on a 10x10)
@@ -267,7 +259,6 @@ public class GameFragment extends Fragment {
             int colIncrement = 0;
 
             switch (direction) {
-                case 0: colIncrement = 1; break; // Horizontal (left to right)
                 case 1: colIncrement = -1; break; // Horizontal (right to left)
                 case 2: rowIncrement = 1; break; // Vertical (top to bottom)
                 case 3: rowIncrement = -1; break; // Vertical (bottom to top)
@@ -275,6 +266,7 @@ public class GameFragment extends Fragment {
                 case 5: rowIncrement = -1; colIncrement = -1; break; // Diagonal (bottom-right to top-left)
                 case 6: rowIncrement = 1; colIncrement = -1; break; // Diagonal (top-right to bottom-left)
                 case 7: rowIncrement = -1; colIncrement = 1; break; // Diagonal (bottom-left to top-right)
+                default: colIncrement = 1; break; // Horizontal (left to right)
             }
 
             if (canPlaceWord(grid, word, startRow, startCol, rowIncrement, colIncrement)) {
@@ -420,12 +412,11 @@ public class GameFragment extends Fragment {
 
         if (selectedWord != null) {
             // If the word is in the bank remove it
-            gameViewModel.removeWord(selectedWord);
+            gameViewModel.addToSelectedWords(selectedWord);
             // Call updateWordBank to regenerate the word bank + text view
             updateWordBank();
             // Game end logic
-            List<String> remainingWords = gameViewModel.getWordsLiveData().getValue();
-            if (remainingWords != null && remainingWords.isEmpty()) {
+            if (gameViewModel.getRemainingWordCount() == 0) {
                 congratulationsToast.show();
             }
         }
@@ -456,6 +447,7 @@ public class GameFragment extends Fragment {
     private void newWords() {
         ArrayList<String> newWords = new ArrayList<>();
         gameViewModel.setWords(newWords);
+        gameViewModel.addPlaceholders();
         // Callback function to ensure that we have the words prior to generating the bank
         WordGenerationCallback generationCallback = new WordGenerationCallback() {
             @Override
@@ -469,7 +461,7 @@ public class GameFragment extends Fragment {
             }
         };
         // Actually get the words by calling getRandomWord and passing the callback function
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < gameViewModel.getTotalWordCount(); i++) {
             getRandomWord("^[a-zA-Z]+$", 4, 1, 1, generationCallback);
         }
     }
@@ -524,14 +516,18 @@ public class GameFragment extends Fragment {
     private void newGame() {
         // Updates both the bank and grid for a new game
         // Never any need to update the grid without the bank
-        updateWordBank();
         generateWordSearchGrid();
-        displayGrid();
+        if (gameViewModel.getCurrentWordCount() == gameViewModel.getTotalWordCount()) {
+            updateWordBank();
+            displayGrid();
+        }
     }
     @SuppressLint("NotifyDataSetChanged")
     private void updateWordBank() {
-        WordAdapter wordAdapter = (WordAdapter) wordBankRecyclerView.getAdapter();
+        wordAdapter = (WordAdapter) wordBankRecyclerView.getAdapter();
         assert wordAdapter != null;
+        // Deal with placeholder views
+        gameViewModel.wipePlaceholders();
         wordAdapter.setWords(gameViewModel.getWordsLiveData().getValue());
         wordAdapter.notifyDataSetChanged();
     }
