@@ -117,7 +117,7 @@ public class GameFragment extends Fragment {
     private void initRecyclerView() {
         wordBankRecyclerView = this.requireView().findViewById(R.id.wordBankRecyclerView);
         wordBankRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        boolean createPlaceholderViews = gameViewModel.getWordsLiveData().getValue().isEmpty();
+        boolean createPlaceholderViews = Objects.requireNonNull(gameViewModel.getWordsLiveData().getValue()).isEmpty();
         if (createPlaceholderViews) {
             gameViewModel.addPlaceholders();
         }
@@ -139,9 +139,6 @@ public class GameFragment extends Fragment {
             }
         });
         fab.setOnClickListener(view -> newWords());
-        colorViewModel.getSelectedColor().observe(getViewLifecycleOwner(), color -> {
-            //wordBankTextView.setTextColor(color);
-        });
         ViewTreeObserver viewTreeObserver = this.requireView().getViewTreeObserver();
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -182,6 +179,7 @@ public class GameFragment extends Fragment {
         int numCols = gameViewModel.getCurrentGridSize();
         List<String> words = gameViewModel.getWordsLiveData().getValue();
         char[][] grid = new char[numRows][numCols];
+        int[][] selectedGrid = new int[numRows][numCols];
         // Place words in the grid
         assert words != null;
         for (String word : words) {
@@ -191,12 +189,13 @@ public class GameFragment extends Fragment {
         // Fill the remaining empty spaces with random letters
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
+                selectedGrid[i][j] = 0;
                 if (grid[i][j] == '\0') {
                     grid[i][j] = (char) ('A' + (int) (Math.random() * 26));
                 }
             }
         }
-
+        gameViewModel.setSelectedGrid(selectedGrid);
         gameViewModel.setWordSearchGrid(grid);
     }
     private void displayGrid() {
@@ -220,6 +219,9 @@ public class GameFragment extends Fragment {
                 cell.setPadding(40, 20, 30, 40);
                 cell.setGravity(Gravity.CENTER); // This prevents the letters clipping
                 cell.setTextColor(Color.WHITE);
+                if (gameViewModel.isCellSelected(row, col)) {
+                    cell.setBackgroundColor(colorViewModel.getSelectedColor().getValue());
+                }
                 cell.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                 cell.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                 cell.setShadowLayer(6f, 0f, 0f, Color.WHITE);
@@ -428,12 +430,14 @@ public class GameFragment extends Fragment {
                 if (row == selectedRow && col == selectedCol) {
                     // Deselect the previously selected cell by setting its background to transparent
                     selectedCell.setBackgroundColor(Color.TRANSPARENT);
+                    gameViewModel.setCellDeselected(row, col);
                     selectedRow = -1; // Reset the selected row and column
                     selectedCol = -1;
                 }
                 else {
                     // Set the background color for the newly selected cell
                     selectedCell.setBackgroundColor(selectedColor);
+                    gameViewModel.setCellSelected(row, col);
                     // Update the selected row and column
                     selectedRow = row;
                     selectedCol = col;
