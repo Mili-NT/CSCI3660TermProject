@@ -11,15 +11,13 @@ import java.util.List;
 public class GameViewModel extends ViewModel {
     // Game variables
     private WordAPIInterface wordAPI;
-    private final int currentGridSize = 10;
     private boolean displayPopup = true;
     // Word grid and bank
     private char[][] wordSearchGrid;
     private final MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
     private final ArrayList<String> selectedWords = new ArrayList<>();
     private int remainingWordCount = 0;
-
-    private final int totalWordCount = 6;
+    private static final String PLACEHOLDER = "placeholder";
 
     // Getters and Setters
     public WordAPIInterface getWordAPI() {
@@ -27,7 +25,7 @@ public class GameViewModel extends ViewModel {
     }
 
     public int getCurrentGridSize() {
-        return this.currentGridSize;
+        return 10;
     }
 
     public int getRemainingWordCount() {
@@ -35,7 +33,7 @@ public class GameViewModel extends ViewModel {
     }
     public void setRemainingWordCount() {
         for (String word : this.wordsLiveData.getValue()) {
-            if (!word.contains("PLACEHOLDER")) {
+            if (!word.contains(PLACEHOLDER)) {
                 this.remainingWordCount++;
             }
         }
@@ -51,13 +49,13 @@ public class GameViewModel extends ViewModel {
     }
 
     public int getTotalWordCount() {
-        return this.totalWordCount;
+        return 6;
     }
     public int getCurrentWordCount() {
         int currentWordCount = 0;
         for (int i = 0; i < this.wordsLiveData.getValue().size(); i++) {
             String word = this.wordsLiveData.getValue().get(i);
-            if (!word.contains("placeholder")) {
+            if (!word.contains(PLACEHOLDER)) {
                 currentWordCount++;
             }
         }
@@ -78,23 +76,23 @@ public class GameViewModel extends ViewModel {
     public void addPlaceholders() {
         // Add placeholder elements (these get rendered as transparent in the word adapter)
         for (int i = 0; i < this.getTotalWordCount(); i++) {
-            this.addWord("placeholder");
+            this.addWord(PLACEHOLDER);
         }
     }
     public void wipePlaceholders() {
         List<String> currentWords = this.wordsLiveData.getValue();
         if (currentWords != null) {
-            currentWords.removeIf(word -> word.toLowerCase().contains("placeholder"));
+            currentWords.removeIf(word -> word.toLowerCase().contains(PLACEHOLDER));
         }
         this.wordsLiveData.setValue(currentWords);
     }
     public void addWord(String word) {
         List<String> currentWords = this.wordsLiveData.getValue();
         if (currentWords != null) {
-            if (!word.contains("placeholder")) {
+            if (!word.contains(PLACEHOLDER)) {
                 for (int i = 0; i < currentWords.size(); i++) {
                     String currentWord = currentWords.get(i);
-                    if (currentWord.contains("placeholder")) {
+                    if (currentWord.contains(PLACEHOLDER)) {
                         currentWords.set(i, word.toLowerCase());
                         break;
                     }

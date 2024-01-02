@@ -1,4 +1,6 @@
 package com.zybooks.csci3660termproject;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -9,19 +11,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
+import android.os.Looper;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /*
-TODO: Make highlighter automatic
+TODO: Make highlighter automatic and saveable
 TODO: UI polishing
     - Implement a good looking placeholder grid and maybe animate the swap
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ColorViewModel colorViewModel = new ViewModelProvider(this).get(ColorViewModel.class);
+        new ViewModelProvider(this).get(ColorViewModel.class);
         //nav bar
         BottomNavigationView navView = findViewById(R.id.nav_view);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Adds star with delay between stars
     private void addStarsWithDelay() {
-        final Handler handler = new Handler();
+        final Handler handler = new Handler(Looper.getMainLooper());
         final int delayMillis = 200;
         final FrameLayout container = findViewById(R.id.star_container); // Your FrameLayout
 
@@ -95,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
 
         //sets size of stars
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
+                WRAP_CONTENT,
+                WRAP_CONTENT
         );
-        View nav_host_frag = this.findViewById(R.id.nav_host_fragment);
-        params.setMargins(getRandomPosition(nav_host_frag.getWidth()), getRandomPosition(nav_host_frag.getHeight()), 0, 0);
+        View navHostFrag = this.findViewById(R.id.nav_host_fragment);
+        params.setMargins(getRandomPosition(navHostFrag.getWidth()), getRandomPosition(navHostFrag.getHeight()), 0, 0);
         star.setLayoutParams(params);
 
         //Makes stars twinkle

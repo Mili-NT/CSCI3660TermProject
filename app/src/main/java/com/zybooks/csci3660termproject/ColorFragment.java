@@ -23,29 +23,23 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class ColorFragment extends Fragment {
     // text view variable to set the color for GFG text
-    private TextView gfgTextView;
-
     // view box to preview the selected color
     private View mColorPreview;
 
     // this is the default color of the preview box
     private ColorViewModel colorViewModel;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
     //inflates color fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_color,container, false);
     }
-
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         colorViewModel = new ViewModelProvider(requireActivity()).get(ColorViewModel.class);
         // register the GFG text with appropriate ID
-        gfgTextView = view.findViewById(R.id.gfg_heading);
+        TextView gfgTextView = view.findViewById(R.id.gfg_heading);
 
         // register two of the buttons with their
         // appropriate IDs
@@ -70,34 +64,28 @@ public class ColorFragment extends Fragment {
             gfgTextView.setTextColor(mDefaultColor);
         }
         // button open the AmbilWanra color picker dialog.
-        mPickColorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // to make code look cleaner the color
-                // picker dialog functionality are
-                // handled in openColorPickerDialogue()
-                // function
-                openColorPickerDialogue();
-            }
-        });
+        mPickColorButton.setOnClickListener(v ->
+            // to make code look cleaner the color
+            // picker dialog functionality are
+            // handled in openColorPickerDialogue()
+            // function
+            openColorPickerDialogue()
+        );
 
         // button to set the color GFG text
-        mSetColorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // as the mDefaultColor is the global
-                // variable its value will be changed as
-                // soon as ok button is clicked from the
-                // color picker dialog.
-                Integer selectedColor = colorViewModel.getSelectedColor().getValue();
-                if (selectedColor == null) {
-                    // Prevent potential null pointer exception
-                    selectedColor = Color.BLACK;
-                }
-                colorViewModel.setSelectedColor(selectedColor);
-                gfgTextView.setTextColor(selectedColor);
-                colorViewModel.saveColorToSharedPreferences(selectedColor, requireContext());
+        mSetColorButton.setOnClickListener(v -> {
+            // as the mDefaultColor is the global
+            // variable its value will be changed as
+            // soon as ok button is clicked from the
+            // color picker dialog.
+            Integer selectedColor = colorViewModel.getSelectedColor().getValue();
+            if (selectedColor == null) {
+                // Prevent potential null pointer exception
+                selectedColor = Color.BLACK;
             }
+            colorViewModel.setSelectedColor(selectedColor);
+            gfgTextView.setTextColor(selectedColor);
+            colorViewModel.saveColorToSharedPreferences(selectedColor, requireContext());
         });
     }
 
