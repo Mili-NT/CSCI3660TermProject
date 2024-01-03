@@ -1,7 +1,7 @@
-package com.zybooks.csci3660termproject.retrofit;
-import com.zybooks.csci3660termproject.api.WordAPIClient;
-import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
-import com.zybooks.csci3660termproject.responses.WordAPISearchResponse;
+package com.csci3660.cosmiccross.data.api.retrofit;
+import com.csci3660.cosmiccross.data.api.WordAPIClient;
+import com.csci3660.cosmiccross.data.responses.WordAPIRandomResponse;
+import com.csci3660.cosmiccross.data.responses.WordAPISearchResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -1,4 +1,4 @@
-package com.zybooks.csci3660termproject;
+package com.csci3660.cosmiccross.viewmodels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,12 +23,12 @@ public class ColorViewModel extends ViewModel {
         return this.selectedColor;
     }
 
-    void saveColorToSharedPreferences(int color, Context context) {
+    public void saveColorToSharedPreferences(int color, Context context) {
         SharedPreferences.Editor editor = context.getSharedPreferences(ColorViewModel.COLOR_PREF, Context.MODE_PRIVATE).edit();
         editor.putInt(ColorViewModel.COLOR_KEY, color);
         editor.apply();
     }
-    static Integer getColorFromPreference(Context context) {
+    public static Integer getColorFromPreference(Context context) {
         // Gets color from preferences
         SharedPreferences prefs = context.getSharedPreferences(ColorViewModel.COLOR_PREF, Context.MODE_PRIVATE);
         return prefs.getInt(ColorViewModel.COLOR_KEY, Color.BLACK);

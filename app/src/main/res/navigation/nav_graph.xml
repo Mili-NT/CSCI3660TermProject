@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/game_Fragment"
-        android:name="com.zybooks.csci3660termproject.GameFragment"
+        android:name="com.csci3660.cosmiccross.fragments.GameFragment"
         android:label="@string/game_tab"
         tools:layout="@layout/fragment_game" />
 
     <fragment
         android:id="@+id/color_Fragment"
-        android:name="com.zybooks.csci3660termproject.ColorFragment"
+        android:name="com.csci3660.cosmiccross.fragments.ColorFragment"
         android:label="@string/color_tab"
         tools:layout="@layout/fragment_color" />
 
     <fragment
         android:id="@+id/settings_Fragment"
-        android:name="com.zybooks.csci3660termproject.SettingsFragment"
+        android:name="com.csci3660.cosmiccross.fragments.SettingsFragment"
         android:label="@string/settings_tab"
         tools:layout="@layout/fragment_settings" />
 </navigation>

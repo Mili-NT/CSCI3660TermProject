@@ -1,4 +1,4 @@
-package com.zybooks.csci3660termproject.responses;
+package com.csci3660.cosmiccross.data.responses;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

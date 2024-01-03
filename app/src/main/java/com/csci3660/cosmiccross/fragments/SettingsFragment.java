@@ -1,4 +1,4 @@
-package com.zybooks.csci3660termproject;
+package com.csci3660.cosmiccross.fragments;
 
 import android.os.Bundle;
 
@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.zybooks.csci3660termproject.api.WordAPIManager;
+
+import com.csci3660.cosmiccross.data.api.WordAPIManager;
+import com.zybooks.csci3660termproject.R;
 
 /**
  * A simple {@link Fragment} subclass.

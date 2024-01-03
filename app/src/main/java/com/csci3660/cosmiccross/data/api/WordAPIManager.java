@@ -1,4 +1,4 @@
-package com.zybooks.csci3660termproject.api;
+package com.csci3660.cosmiccross.data.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;

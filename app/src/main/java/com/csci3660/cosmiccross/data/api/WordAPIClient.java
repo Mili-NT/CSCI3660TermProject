@@ -1,5 +1,5 @@
-package com.zybooks.csci3660termproject.api;
-import com.zybooks.csci3660termproject.retrofit.WordAPIInterface;
+package com.csci3660.cosmiccross.data.api;
+import com.csci3660.cosmiccross.data.api.retrofit.WordAPIInterface;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

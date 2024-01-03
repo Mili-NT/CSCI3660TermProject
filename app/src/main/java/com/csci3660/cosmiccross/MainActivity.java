@@ -1,4 +1,4 @@
-package com.zybooks.csci3660termproject;
+package com.csci3660.cosmiccross;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,7 +7,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.csci3660.cosmiccross.viewmodels.ColorViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.zybooks.csci3660termproject.R;
 
 import android.os.Bundle;
 import android.os.Handler;

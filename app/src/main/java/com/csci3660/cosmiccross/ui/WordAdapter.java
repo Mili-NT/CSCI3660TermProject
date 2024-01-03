@@ -1,4 +1,4 @@
-package com.zybooks.csci3660termproject;
+package com.csci3660.cosmiccross.ui;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.csci3660.cosmiccross.viewmodels.GameViewModel;
+import com.zybooks.csci3660termproject.R;
+
 import java.util.List;
 
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder> {

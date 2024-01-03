@@ -1,9 +1,9 @@
-package com.zybooks.csci3660termproject;
+package com.csci3660.cosmiccross.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.zybooks.csci3660termproject.retrofit.WordAPIInterface;
+import com.csci3660.cosmiccross.data.api.retrofit.WordAPIInterface;
 
 import java.util.ArrayList;
 import java.util.List;

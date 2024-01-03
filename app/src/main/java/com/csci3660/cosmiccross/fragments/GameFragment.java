@@ -1,4 +1,4 @@
-package com.zybooks.csci3660termproject;
+package com.csci3660.cosmiccross.fragments;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -34,10 +34,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.widget.Toast;
 
 
+import com.csci3660.cosmiccross.viewmodels.ColorViewModel;
+import com.csci3660.cosmiccross.viewmodels.GameViewModel;
+import com.csci3660.cosmiccross.ui.WordAdapter;
+import com.csci3660.cosmiccross.WordGenerationCallback;
+import com.csci3660.cosmiccross.data.responses.WordAPIRandomResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.zybooks.csci3660termproject.api.WordAPIClient;
-import com.zybooks.csci3660termproject.api.WordAPIManager;
-import com.zybooks.csci3660termproject.responses.WordAPIRandomResponse;
+import com.zybooks.csci3660termproject.R;
+import com.csci3660.cosmiccross.data.api.WordAPIClient;
+import com.csci3660.cosmiccross.data.api.WordAPIManager;
 
 import java.util.ArrayList;
 import java.util.List;
