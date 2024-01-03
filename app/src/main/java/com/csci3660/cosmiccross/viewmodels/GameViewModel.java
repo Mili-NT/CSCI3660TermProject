@@ -34,7 +34,7 @@ public class GameViewModel extends ViewModel {
         return this.remainingWordCount;
     }
     public void setRemainingWordCount() {
-        for (String word : this.wordsLiveData.getValue()) {
+        for (String word : this.getWordsLiveDataValue()) {
             if (!word.contains(PLACEHOLDER)) {
                 this.remainingWordCount++;
             }
@@ -48,14 +48,18 @@ public class GameViewModel extends ViewModel {
     public LiveData<List<String>> getWordsLiveData() {
         return this.wordsLiveData;
     }
+    public List<String> getWordsLiveDataValue() {
+        // Prevent NPEs
+        return this.wordsLiveData.getValue() == null ? new ArrayList<>() : this.wordsLiveData.getValue();
+    }
 
     public int getTotalWordCount() {
         return 6;
     }
     public int getCurrentWordCount() {
         int currentWordCount = 0;
-        for (int i = 0; i < this.wordsLiveData.getValue().size(); i++) {
-            String word = this.wordsLiveData.getValue().get(i);
+        for (int i = 0; i < this.getWordsLiveDataValue().size(); i++) {
+            String word = this.getWordsLiveDataValue().get(i);
             if (!word.contains(PLACEHOLDER)) {
                 currentWordCount++;
             }

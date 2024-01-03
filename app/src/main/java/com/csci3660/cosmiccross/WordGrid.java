@@ -7,11 +7,11 @@ import java.util.Random;
 
 public class WordGrid {
     public static class WordCell {
-        char cellContent;
+        private char cellContent;
         private boolean isSelected;
-        boolean isPartOfWord;
+        private boolean isPartOfWord;
         boolean isStartingCharacter;
-        String parentWord;
+        private String parentWord;
 
         public WordCell() {
             this.cellContent = '\0';

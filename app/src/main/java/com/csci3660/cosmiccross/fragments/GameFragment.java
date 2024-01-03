@@ -45,7 +45,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -107,7 +106,7 @@ public class GameFragment extends Fragment {
     private void initRecyclerView() {
         wordBankRecyclerView = this.requireView().findViewById(R.id.wordBankRecyclerView);
         wordBankRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        boolean createPlaceholderViews = Objects.requireNonNull(gameViewModel.getWordsLiveData().getValue()).isEmpty();
+        boolean createPlaceholderViews = gameViewModel.getWordsLiveDataValue().isEmpty();
         if (createPlaceholderViews) {
             gameViewModel.addPlaceholders();
         }
