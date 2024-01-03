@@ -48,11 +48,8 @@ public class GameViewModel extends ViewModel {
     public void setSelectedGrid(int[][] selectedGrid) {
         this.selectedGrid = selectedGrid;
     }
-    public void setCellSelected(int row, int col) {
-        this.selectedGrid[row][col] = 1;
-    }
-    public void setCellDeselected(int row, int col) {
-        this.selectedGrid[row][col] = 0;
+    public void toggleCellSelection(int row, int col) {
+        this.selectedGrid[row][col] = 1 - this.selectedGrid[row][col];
     }
     public char[][] getWordSearchGrid() { return this.wordSearchGrid; }
 

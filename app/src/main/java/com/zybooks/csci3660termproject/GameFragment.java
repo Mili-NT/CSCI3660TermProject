@@ -60,7 +60,7 @@ public class GameFragment extends Fragment {
     private int selectedCol = -1;
     private Toast congratulationsToast;
 
-    private Random random = new Random();
+    private final Random random = new Random();
     public GameFragment() {
         // Required empty public constructor
     }
@@ -371,14 +371,13 @@ public class GameFragment extends Fragment {
         // Check if word selected is valid
         // If not, checkForWord returns null
         String selectedWord = checkForWord(row, col);
-
-        Integer selectedColor = colorViewModel.getSelectedColor().getValue();
+        int selectedColor = colorViewModel.getSelectedColor().getValue();
         TableLayout tableLayout = this.requireView().findViewById(R.id.tableLayout);
 
-        if (selectedWord != null) {
+        if (selectedWord != null && !gameViewModel.isWordFound(selectedWord)) {
             // If the word is in the bank remove it
             gameViewModel.addToSelectedWords(selectedWord);
-            // Call updateWordBank to regenerate the word bank + text view
+            // Call updateWordBank to regenerate the word bank
             updateWordBank();
             // Game end logic
             if (gameViewModel.getRemainingWordCount() == 0) {
@@ -386,26 +385,18 @@ public class GameFragment extends Fragment {
             }
         }
         // Apply the selected color to the clicked cell
-        if (selectedColor != null) {
-            TableRow tableRow = (TableRow) tableLayout.getChildAt(row);
-            if (tableRow != null) {
-                TextView selectedCell = (TextView) tableRow.getChildAt(col);
-                if (row == selectedRow && col == selectedCol) {
-                    // Deselect the previously selected cell by setting its background to transparent
-                    selectedCell.setBackgroundColor(Color.TRANSPARENT);
-                    gameViewModel.setCellDeselected(row, col);
-                    selectedRow = -1; // Reset the selected row and column
-                    selectedCol = -1;
-                }
-                else {
-                    // Set the background color for the newly selected cell
-                    selectedCell.setBackgroundColor(selectedColor);
-                    gameViewModel.setCellSelected(row, col);
-                    // Update the selected row and column
-                    selectedRow = row;
-                    selectedCol = col;
-                }
+        TableRow tableRow = (TableRow) tableLayout.getChildAt(row);
+        if (tableRow != null) {
+            TextView selectedCell = (TextView) tableRow.getChildAt(col);
+            if (gameViewModel.isCellSelected(row, col)) {
+                // Deselect the previously selected cell by setting its background to transparent
+                selectedCell.setBackgroundColor(Color.TRANSPARENT);
             }
+            else {
+                // Set the background color for the newly selected cell
+                selectedCell.setBackgroundColor(selectedColor);
+            }
+            gameViewModel.toggleCellSelection(row, col);
         }
     }
     //
