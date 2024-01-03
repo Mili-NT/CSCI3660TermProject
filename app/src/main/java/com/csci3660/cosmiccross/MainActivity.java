@@ -39,6 +39,7 @@ TODO?: Variable grid sizes
 */
 public class MainActivity extends AppCompatActivity {
     private int starCount = 0;
+    private final Random random = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Random delay so stars appear staggered
     private int getRandomDelay() {
-        return new Random().nextInt(1000);
+        return random.nextInt(1000);
     }
 
     //Adds star with delay between stars

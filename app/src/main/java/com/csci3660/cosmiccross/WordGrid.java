@@ -2,6 +2,7 @@ package com.csci3660.cosmiccross;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class WordGrid {
@@ -83,7 +84,7 @@ public class WordGrid {
         // A starting character is always going to be part of a word-- remove?
         if (cell.isPartOfWord && cell.isStartingCharacter) {
             // Toggle selection for every cell in the parent word
-            for (WordCell wordCell : this.wordPositionMap.get(cell.parentWord)) {
+            for (WordCell wordCell : Objects.requireNonNull(this.wordPositionMap.get(cell.parentWord))) {
                 wordCell.toggleSelection();
             }
         }

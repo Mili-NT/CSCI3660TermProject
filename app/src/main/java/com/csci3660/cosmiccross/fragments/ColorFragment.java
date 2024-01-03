@@ -74,11 +74,7 @@ public class ColorFragment extends Fragment {
             // variable its value will be changed as
             // soon as ok button is clicked from the
             // color picker dialog.
-            Integer selectedColor = colorViewModel.getSelectedColor().getValue();
-            if (selectedColor == null) {
-                // Prevent potential null pointer exception
-                selectedColor = Color.BLACK;
-            }
+            int selectedColor = colorViewModel.getSelectedColor();
             colorViewModel.setSelectedColor(selectedColor);
             gfgTextView.setTextColor(selectedColor);
             colorViewModel.saveColorToSharedPreferences(selectedColor, requireContext());
@@ -94,7 +90,7 @@ public class ColorFragment extends Fragment {
     public void openColorPickerDialogue() {
         // the AmbilWarnaDialog callback needs 3 parameters
         // one is the context, second is default color,
-        final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(requireContext(), colorViewModel.getSelectedColor().getValue(),
+        final AmbilWarnaDialog colorPickerDialogue = new AmbilWarnaDialog(requireContext(), colorViewModel.getSelectedColor(),
                 new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onCancel(AmbilWarnaDialog dialog) {

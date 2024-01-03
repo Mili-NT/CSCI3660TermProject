@@ -57,17 +57,8 @@ public class GameFragment extends Fragment {
     private WordAdapter wordAdapter;
     private RecyclerView wordBankRecyclerView;
     private Toast congratulationsToast;
-    private final Random random = new Random();
     public GameFragment() {
         // Required empty public constructor
-    }
-    /**
-     * @param savedInstanceState If the fragment is being re-created from
-     *                           a previous saved state, this is the state.
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
     /**
      * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
@@ -121,7 +112,7 @@ public class GameFragment extends Fragment {
             gameViewModel.addPlaceholders();
         }
         wordAdapter = new WordAdapter(gameViewModel.getWordsLiveData().getValue(),
-                colorViewModel.getSelectedColor().getValue(),
+                colorViewModel.getSelectedColor(),
                 gameViewModel);
         wordBankRecyclerView.setAdapter(wordAdapter);
     }
@@ -195,7 +186,7 @@ public class GameFragment extends Fragment {
                 cell.setTextColor(Color.WHITE);
                 // If the cell selection is toggled, highlight the background
                 if (grid.getCell(i, j).isSelected()) {
-                    cell.setBackgroundColor(colorViewModel.getSelectedColor().getValue());
+                    cell.setBackgroundColor(colorViewModel.getSelectedColor());
                 }
                 else {
                     // Un-highlighting

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -20,8 +19,9 @@ public class ColorViewModel extends ViewModel {
         this.selectedColor.setValue(color);
     }
 
-    public LiveData<Integer> getSelectedColor() {
-        return this.selectedColor;
+    public int getSelectedColor() {
+        // Prevent NPEs by ensuring default returns if null
+        return this.selectedColor.getValue() == null ? Color.BLACK : this.selectedColor.getValue();
     }
 
     public void saveColorToSharedPreferences(int color, Context context) {

@@ -15,7 +15,7 @@ public class GameViewModel extends ViewModel {
     private WordAPIInterface wordAPI;
     private boolean displayPopup = true;
     // Word grid and bank
-    public WordGrid wordSearchGrid;
+    private WordGrid wordSearchGrid;
     private final MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
     private final ArrayList<String> selectedWords = new ArrayList<>();
     private int remainingWordCount = 0;
