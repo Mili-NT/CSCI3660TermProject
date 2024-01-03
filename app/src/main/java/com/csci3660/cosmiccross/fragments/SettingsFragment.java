@@ -1,8 +1,6 @@
 package com.csci3660.cosmiccross.fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
+import com.csci3660.cosmiccross.R;
 import com.csci3660.cosmiccross.data.api.WordAPIManager;
-import com.zybooks.csci3660termproject.R;
 
 /**
  * A simple {@link Fragment} subclass.

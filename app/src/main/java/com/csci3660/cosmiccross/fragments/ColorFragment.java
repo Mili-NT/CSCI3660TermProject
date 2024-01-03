@@ -12,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.csci3660.cosmiccross.R;
 import com.csci3660.cosmiccross.viewmodels.ColorViewModel;
-import com.zybooks.csci3660termproject.R;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 

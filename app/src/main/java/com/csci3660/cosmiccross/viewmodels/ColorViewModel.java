@@ -3,6 +3,7 @@ package com.csci3660.cosmiccross.viewmodels;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

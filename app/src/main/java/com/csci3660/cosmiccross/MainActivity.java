@@ -1,15 +1,6 @@
 package com.csci3660.cosmiccross;
+
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
-
-import com.csci3660.cosmiccross.viewmodels.ColorViewModel;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.zybooks.csci3660termproject.R;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,15 +10,25 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
+
+import com.csci3660.cosmiccross.viewmodels.ColorViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.Random;
 
 /*
-TODO: Make highlighter automatic
 TODO: Replace all usages of Math.random with Random.nextInt()
 TODO: UI polishing
     - Implement a good looking placeholder grid and maybe animate the swap
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
         - hideFAB() disabled until then.
+    - Animate word highlighting somehow?
 TODO: Implement variable length and count of words
 TODO: Change the font and spacing for the word bank
 TODO: Change the text color of the grid letters to complement the selected highlight color

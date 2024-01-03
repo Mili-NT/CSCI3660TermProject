@@ -2,10 +2,10 @@ plugins {
     id 'com.android.application'
 }
 android {
-    namespace 'com.zybooks.csci3660termproject'
+    namespace 'com.csci3660.cosmiccross'
     compileSdk 34
     defaultConfig {
-        applicationId "com.zybooks.csci3660termproject"
+        applicationId "com.csci3660.cosmiccross"
         minSdk 28
         targetSdk 33
         versionCode 1
