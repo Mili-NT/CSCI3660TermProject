@@ -3,6 +3,8 @@ package com.csci3660.cosmiccross.viewmodels;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.csci3660.cosmiccross.WordGrid;
 import com.csci3660.cosmiccross.data.api.retrofit.WordAPIInterface;
 
 import java.util.ArrayList;
@@ -13,8 +15,7 @@ public class GameViewModel extends ViewModel {
     private WordAPIInterface wordAPI;
     private boolean displayPopup = true;
     // Word grid and bank
-    private char[][] wordSearchGrid;
-    private int[][] selectedGrid;
+    public WordGrid wordSearchGrid;
     private final MutableLiveData<List<String>> wordsLiveData = new MutableLiveData<>();
     private final ArrayList<String> selectedWords = new ArrayList<>();
     private int remainingWordCount = 0;
@@ -42,16 +43,7 @@ public class GameViewModel extends ViewModel {
     public boolean shouldDisplayPopup() {
         return this.displayPopup;
     }
-    public boolean isCellSelected(int row, int col) {
-        return this.selectedGrid[row][col] == 1;
-    }
-    public void setSelectedGrid(int[][] selectedGrid) {
-        this.selectedGrid = selectedGrid;
-    }
-    public void toggleCellSelection(int row, int col) {
-        this.selectedGrid[row][col] = 1 - this.selectedGrid[row][col];
-    }
-    public char[][] getWordSearchGrid() { return this.wordSearchGrid; }
+    public WordGrid getWordSearchGrid() { return this.wordSearchGrid; }
 
     public LiveData<List<String>> getWordsLiveData() {
         return this.wordsLiveData;
@@ -113,8 +105,8 @@ public class GameViewModel extends ViewModel {
             this.wordsLiveData.setValue(currentWords);
         }
     }
-    public void setWordSearchGrid(char[][] newWordSearchGrid) {
-        this.wordSearchGrid = newWordSearchGrid;
+    public void newWordSearchGrid() {
+        this.wordSearchGrid = new WordGrid(this.getCurrentGridSize(), this.wordsLiveData.getValue());
     }
     public void setDisplayPopup(boolean displayPopup) {
         this.displayPopup = displayPopup;
@@ -124,4 +116,3 @@ public class GameViewModel extends ViewModel {
         this.wordAPI = wordAPIInterface;
     }
 }
-

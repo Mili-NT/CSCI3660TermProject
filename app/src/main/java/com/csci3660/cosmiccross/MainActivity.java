@@ -23,12 +23,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Random;
 
 /*
-TODO: Replace all usages of Math.random with Random.nextInt()
+TODO: Allow for intersecting words
+    - WordCells must be able to be part of two parent words
+    - Selection logic not equipped yet to handle multi-word cells.
 TODO: UI polishing
     - Implement a good looking placeholder grid and maybe animate the swap
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
         - hideFAB() disabled until then.
     - Animate word highlighting somehow?
+Replace all usages of Math.random with Random.nextInt()
 TODO: Implement variable length and count of words
 TODO: Change the font and spacing for the word bank
 TODO: Change the text color of the grid letters to complement the selected highlight color

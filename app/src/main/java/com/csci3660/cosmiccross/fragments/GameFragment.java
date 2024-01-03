@@ -7,15 +7,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.util.TypedValue;
@@ -27,22 +18,29 @@ import android.view.ViewTreeObserver;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.widget.Toast;
-
-
-import com.csci3660.cosmiccross.viewmodels.ColorViewModel;
-import com.csci3660.cosmiccross.viewmodels.GameViewModel;
-import com.csci3660.cosmiccross.ui.WordAdapter;
+import com.csci3660.cosmiccross.R;
 import com.csci3660.cosmiccross.WordGenerationCallback;
-import com.csci3660.cosmiccross.data.responses.WordAPIRandomResponse;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.zybooks.csci3660termproject.R;
+import com.csci3660.cosmiccross.WordGrid;
 import com.csci3660.cosmiccross.data.api.WordAPIClient;
 import com.csci3660.cosmiccross.data.api.WordAPIManager;
+import com.csci3660.cosmiccross.data.responses.WordAPIRandomResponse;
+import com.csci3660.cosmiccross.ui.WordAdapter;
+import com.csci3660.cosmiccross.viewmodels.ColorViewModel;
+import com.csci3660.cosmiccross.viewmodels.GameViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +51,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class GameFragment extends Fragment {
     private GameViewModel gameViewModel;
     private ColorViewModel colorViewModel;
@@ -165,7 +160,7 @@ public class GameFragment extends Fragment {
         }
         // Grid Data
         if (gameViewModel.getWordSearchGrid() == null) {
-            generateWordSearchGrid();
+            gameViewModel.newWordSearchGrid();
         }
         // Pop-up Handler
         new Handler(Looper.getMainLooper()).postDelayed(this::showPopup, 1000);
@@ -176,55 +171,35 @@ public class GameFragment extends Fragment {
         colorViewModel.setSelectedColor(colorFromPreference);
     }
     //
-    // Word Grid Methods (Generation, Word Placement & Fitting, Grid Cell Code)
+    // Word Grid Methods (Grid view population and Word Generation)
     //
-    private void generateWordSearchGrid() {
-        int numRows = gameViewModel.getCurrentGridSize();
-        int numCols = gameViewModel.getCurrentGridSize();
-        List<String> words = gameViewModel.getWordsLiveData().getValue();
-        char[][] grid = new char[numRows][numCols];
-        int[][] selectedGrid = new int[numRows][numCols];
-        // Place words in the grid
-        assert words != null;
-        for (String word : words) {
-            placeWord(grid, word); // Try placing each word up to 100 times
-        }
-
-        // Fill the remaining empty spaces with random letters
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-                selectedGrid[i][j] = 0;
-                if (grid[i][j] == '\0') {
-                    grid[i][j] = (char) ('A' + random.nextInt(26));
-                }
-            }
-        }
-        gameViewModel.setSelectedGrid(selectedGrid);
-        gameViewModel.setWordSearchGrid(grid);
-    }
     private void displayGrid() {
-        char[][] grid = gameViewModel.getWordSearchGrid();
+        WordGrid grid = gameViewModel.getWordSearchGrid();
         // Clears the original grid
         // Without this, new grids stack on top of the old one
         TableLayout tableLayout = this.requireView().findViewById(R.id.tableLayout);
         tableLayout.removeAllViews();
         // Iterate through grid length (10x10)
-        for (int i = 0; i < grid.length; i++) {
+        for (int i = 0; i < grid.getGridSize(); i++) {
             TableRow tableRow = new TableRow(requireContext());
-
-            for (int j = 0; j < grid[i].length; j++) {
+            for (int j = 0; j < grid.getGridSize(); j++) {
                 // Creates the cells and adds their listeners for selection
                 final int row = i;
                 final int col = j;
                 TextView cell = new TextView(requireContext());
                 // Sets cell contents (letter)
-                cell.setText(String.valueOf(grid[i][j]));
+                cell.setText(String.valueOf(grid.getContentByPosition(i, j)));
                 // Sets cell padding and gravity
                 cell.setPadding(40, 20, 30, 40);
                 cell.setGravity(Gravity.CENTER); // This prevents the letters clipping
                 cell.setTextColor(Color.WHITE);
-                if (gameViewModel.isCellSelected(row, col)) {
+                // If the cell selection is toggled, highlight the background
+                if (grid.getCell(i, j).isSelected()) {
                     cell.setBackgroundColor(colorViewModel.getSelectedColor().getValue());
+                }
+                else {
+                    // Un-highlighting
+                    cell.setBackgroundColor(Color.TRANSPARENT);
                 }
                 cell.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                 cell.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
@@ -237,147 +212,21 @@ public class GameFragment extends Fragment {
                 // Adds the click listener for selection
                 cell.setOnClickListener(view -> onCellClicked(row, col));
                 tableRow.addView(cell);
-
             }
             tableLayout.addView(tableRow);
         }
-    }
-    /**
-     * @param grid The character array representing the currently being generated
-     * @param word The string from the word list being placed in the grid
-     */
-    private void placeWord(char[][] grid, String word) {
-        int length = word.length();
-        int startRow;
-        int startCol;
-        boolean placed = false;
-        // App actually generates multiple grids to ensure each word "fits"
-        // maxAttempts is kept at 100 (reasonable value for four 6 letter words on a 10x10)
-        int attempts = 0;
-
-        while (!placed && attempts < 100) {
-            startRow = random.nextInt(gameViewModel.getCurrentGridSize());
-            startCol = random.nextInt(gameViewModel.getCurrentGridSize());
-
-            int[][] directions = {
-                    {0, 1}, // Horizontal (Right->Left)
-                    {0, -1}, // Horizontal (Left->Right)
-                    {1, 0}, // Vertical (Top->Bottom)
-                    {-1, 0}, // Vertical (Bottom->Top)
-                    {1, 1}, // Diagonal (Top Left->Bottom Right)
-                    {-1, -1}, // Diagonal (Bottom Right->Top Left)
-                    {1, -1}, // Diagonal (Top Left->Bottom Right)
-                    {-1, 1}, // Diagonal (Bottom Left->Top Right)
-            };
-            // Select random direction for word
-            int[] direction = directions[random.nextInt(directions.length)];
-            int rowIncrement = direction[0];
-            int colIncrement = direction[1];
-
-            if (canPlaceWord(grid, word, startRow, startCol, rowIncrement, colIncrement)) {
-                for (int i = 0; i < length; i++) {
-                    int row = startRow + i * rowIncrement;
-                    int col = startCol + i * colIncrement;
-
-                    grid[row][col] = word.charAt(i);
-                }
-                placed = true;
-            }
-
-            attempts++;
-        }
-    }
-    /**
-     * @param grid The character array representing the word search grid.
-     * @param word The string from the word list being placed in the grid.
-     * @param startRow Index of the row that the word will start on (randomly chosen).
-     * @param startCol Index of the column that the word will start on (randomly chosen).
-     * @param rowIncrement Integer by which each character in the word will be incremented horizontally.
-     * @param colIncrement Integer by which each character in the word will be incremented vertically.
-     * @return Returns True if the word fits at the position determined by the startRow and startCol, otherwise False
-     */
-    private boolean canPlaceWord(char[][] grid, String word, int startRow, int startCol, int rowIncrement, int colIncrement) {
-        int length = word.length();
-
-        int endRow = startRow + (length - 1) * rowIncrement;
-        int endCol = startCol + (length - 1) * colIncrement;
-
-        if (endRow >= 0 && endRow < gameViewModel.getCurrentGridSize() && endCol >= 0 && endCol < gameViewModel.getCurrentGridSize()) {
-            for (int i = 0; i < length; i++) {
-                int row = startRow + i * rowIncrement;
-                int col = startCol + i * colIncrement;
-
-                if (grid[row][col] != '\0' && grid[row][col] != word.charAt(i)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-    /**
-     * @param row Index of the row where the word was selected
-     * @param col Index of the column where the word was selected
-     * @return Returns the string of the selected word if (row, col) is a valid position. Otherwise returns null.
-     */
-    private String checkForWord(int row, int col) {
-        char[][] grid = gameViewModel.getWordSearchGrid();
-        List<String> validWords = gameViewModel.getWordsLiveData().getValue();
-        assert validWords != null;
-
-        int[][] directions = {
-                {0, 1}, // Horizontal (Right->Left)
-                {0, -1}, // Horizontal (Left->Right)
-                {1, 0}, // Vertical (Top->Bottom)
-                {-1, 0}, // Vertical (Bottom->Top)
-                {1, 1}, // Diagonal (Top Left->Bottom Right)
-                {-1, -1}, // Diagonal (Bottom Right->Top Left)
-                {1, -1}, // Diagonal (Top Left->Bottom Right)
-                {-1, 1}, // Diagonal (Bottom Left->Top Right)
-        };
-
-        for (int[] direction : directions) {
-            StringBuilder selectedWord = new StringBuilder();
-
-            int rowIncrement = direction[0];
-            int colIncrement = direction[1];
-
-            for (int i = 0; checkValidPosition(row + i * rowIncrement, col + i * colIncrement, grid); i++) {
-                selectedWord.append(grid[row + i * rowIncrement][col + i * colIncrement]);
-
-                if (validWords.contains(selectedWord.toString())) {
-                    return selectedWord.toString();
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param row Row position of starting cell.
-     * @param col Column position of starting cell.
-     * @param grid The current word search grid.
-     * @return True if selected position is valid, otherwise false.
-     */
-    private boolean checkValidPosition(int row, int col, char[][] grid) {
-        return row >= 0 && row < grid.length && col >= 0 && col < grid[row].length && grid[row][col] != '\0';
     }
     /**
      * @param row Index of the row where the word was selected
      * @param col Index of the column where the word was selected
      */
     private void onCellClicked(int row, int col) {
-        // Check if word selected is valid
-        // If not, checkForWord returns null
-        String selectedWord = checkForWord(row, col);
-        int selectedColor = colorViewModel.getSelectedColor().getValue();
-        TableLayout tableLayout = this.requireView().findViewById(R.id.tableLayout);
-
+        WordGrid grid = gameViewModel.getWordSearchGrid();
+        // Check if selected position is the start of a word
+        String selectedWord = grid.checkForWord(row, col);
+        // Ensure valid starting cell was selected and that the word wasn't already found
         if (selectedWord != null && !gameViewModel.isWordFound(selectedWord)) {
-            // If the word is in the bank remove it
+            // If the word is in the bank, add it to the selected words & strike it through
             gameViewModel.addToSelectedWords(selectedWord);
             // Call updateWordBank to regenerate the word bank
             updateWordBank();
@@ -386,20 +235,11 @@ public class GameFragment extends Fragment {
                 congratulationsToast.show();
             }
         }
-        // Apply the selected color to the clicked cell
-        TableRow tableRow = (TableRow) tableLayout.getChildAt(row);
-        if (tableRow != null) {
-            TextView selectedCell = (TextView) tableRow.getChildAt(col);
-            if (gameViewModel.isCellSelected(row, col)) {
-                // Deselect the previously selected cell by setting its background to transparent
-                selectedCell.setBackgroundColor(Color.TRANSPARENT);
-            }
-            else {
-                // Set the background color for the newly selected cell
-                selectedCell.setBackgroundColor(selectedColor);
-            }
-            gameViewModel.toggleCellSelection(row, col);
-        }
+        // toggle selection for this cell and if appropriate all associated cells
+        grid.toggleCellSelection(row, col);
+        // Refresh the grid to apply multi-cell selection changes
+        // Maybe find a better (more efficient) way to do this.
+        displayGrid();
     }
     //
     // Words Methods (API Interactions)
@@ -476,7 +316,7 @@ public class GameFragment extends Fragment {
     private void newGame() {
         // Updates both the bank and grid for a new game
         // Never any need to update the grid without the bank
-        generateWordSearchGrid();
+        gameViewModel.newWordSearchGrid();
         if (gameViewModel.getCurrentWordCount() == gameViewModel.getTotalWordCount()) {
             updateWordBank();
             displayGrid();
