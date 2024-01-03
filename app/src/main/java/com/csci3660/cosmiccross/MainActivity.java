@@ -23,9 +23,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Random;
 
 /*
-TODO: Allow for intersecting words
+TODO: HIGH PRIORITY: Allow for intersecting words
     - WordCells must be able to be part of two parent words
-    - Selection logic not equipped yet to handle multi-word cells.
+    - Selection logic not equipped yet to handle multi-word cells
 TODO: UI polishing
     - Implement a good looking placeholder grid and maybe animate the swap
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
