@@ -38,6 +38,7 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
             holder.wordTextView.setTextColor(Color.TRANSPARENT);
         }
         else {
+            holder.wordTextView.setTextSize(16);
             holder.wordTextView.setTextColor(selectedColor);
         }
         // If word is found, apply a strikethrough

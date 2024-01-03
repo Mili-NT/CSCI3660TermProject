@@ -56,10 +56,7 @@ public class GameFragment extends Fragment {
     private ColorViewModel colorViewModel;
     private WordAdapter wordAdapter;
     private RecyclerView wordBankRecyclerView;
-    private int selectedRow = -1;
-    private int selectedCol = -1;
     private Toast congratulationsToast;
-
     private final Random random = new Random();
     public GameFragment() {
         // Required empty public constructor
