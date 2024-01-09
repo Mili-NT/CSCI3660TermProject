@@ -31,7 +31,7 @@ TODO: UI polishing
     - Figure out what to do with the FAB when it overlaps with the RecyclerView
         - hideFAB() disabled until then.
     - Animate word highlighting somehow?
-Replace all usages of Math.random with Random.nextInt()
+TODO: Replace all usages of Math.random with Random.nextInt()
 TODO: Implement variable length and count of words
 TODO: Change the font and spacing for the word bank
 TODO: Change the text color of the grid letters to complement the selected highlight color

@@ -7,13 +7,17 @@ import java.util.Random;
 
 public class WordGrid {
     public static class WordCell {
+        private int row;
+        private int col;
         private char cellContent;
         private boolean isSelected;
         private boolean isPartOfWord;
         boolean isStartingCharacter;
         private String parentWord;
 
-        public WordCell() {
+        public WordCell(int row, int col) {
+            this.row = row;
+            this.col = col;
             this.cellContent = '\0';
             this.isSelected = false;
             this.isPartOfWord = false;
@@ -28,6 +32,9 @@ public class WordGrid {
         }
         public void toggleSelection() {
             this.isSelected = !this.isSelected;
+        }
+        public void setSelection(boolean isSelected) {
+            this.isSelected = isSelected;
         }
         public boolean isSelected() {
             return this.isSelected;
@@ -52,7 +59,7 @@ public class WordGrid {
         // Initialize each cell in the grid
         for (int i = 0; i < this.gridSize; i++) {
             for (int j = 0; j < this.gridSize; j++) {
-                this.grid[i][j] = new WordCell();
+                this.grid[i][j] = new WordCell(i, j);
             }
         }
 
@@ -83,9 +90,10 @@ public class WordGrid {
         // Check if cell is part of a word AND is the starting character
         // A starting character is always going to be part of a word-- remove?
         if (cell.isPartOfWord && cell.isStartingCharacter) {
+            boolean initialStatus = cell.isSelected;
             // Toggle selection for every cell in the parent word
             for (WordCell wordCell : Objects.requireNonNull(this.wordPositionMap.get(cell.parentWord))) {
-                wordCell.toggleSelection();
+                wordCell.setSelection(!initialStatus);
             }
         }
         else {
